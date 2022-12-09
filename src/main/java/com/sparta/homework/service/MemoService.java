@@ -1,6 +1,7 @@
 package com.sparta.homework.service;
 
 import com.sparta.homework.dto.MemoRequestDto;
+import com.sparta.homework.dto.MessageDto;
 import com.sparta.homework.entity.Memo;
 import com.sparta.homework.repository.MemoRepository;
 import lombok.RequiredArgsConstructor;
@@ -46,9 +47,17 @@ public class MemoService {
     }
 
     @Transactional
-    public Long deleteMemo(Long id, String password) {
-        return memoRepository.deleteByIdAndPassword(id, password);
-        //일치 불일치 확인을 다시 한 번 해야함.(레포지터리에 들려서) "DTO" 아이디 패스워드 값 비교해보자. DTO : 객체를 물고 다니는 친구들
+    public MessageDto deleteMemo(Long id, MemoRequestDto requestDto) {
+        MessageDto messageDto = new MessageDto();
+        messageDto.setMessage("삭제가 완료되었습니다.");
+        Memo memo = memoRepository.findById(id).orElseThrow(
+                () -> new IllegalArgumentException("아이디가 존재하지 않습니다.")
+        );
+        if (!requestDto.getPassword().equals(memo.getPassword())){
+            throw new RuntimeException("비밀번호가 일치하지 않습니다.");
+        }
+        memoRepository.deleteByIdAndPassword(memo.getId(), memo.getPassword());
+        return messageDto;
     }
 
 }
