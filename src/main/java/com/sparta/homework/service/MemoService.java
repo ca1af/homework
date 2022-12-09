@@ -1,16 +1,13 @@
 package com.sparta.homework.service;
 
-import com.sparta.homework.dto.DeleteRequestDto;
 import com.sparta.homework.dto.MemoRequestDto;
 import com.sparta.homework.entity.Memo;
 import com.sparta.homework.repository.MemoRepository;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.sql.Delete;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
