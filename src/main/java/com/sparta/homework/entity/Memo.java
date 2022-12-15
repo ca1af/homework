@@ -5,8 +5,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
 
 @Getter
 @Entity
@@ -24,9 +22,11 @@ public class Memo extends Timestamped {
     @Column(nullable = false)
     private String contents;
 
+
     @ManyToOne
     @JoinColumn(name = "USER_ID", nullable = false)
     private User user;
+
 
     public Memo(String title, String contents, User user) {
         this.contents = contents;
@@ -34,9 +34,12 @@ public class Memo extends Timestamped {
         this.user = user;
     }
 
-    public Memo(MemoRequestDto requestDto) {
+    public Memo(MemoRequestDto requestDto, User user) {
         this.contents = requestDto.getContents();
         this.title = requestDto.getTitle();
+        this.user = user;
+        //이부분에서 userId만 해서 해도 되나...foreign 키로 userId가 들어가있지않나?
+        // 아니 근데 JoinColumn 할려면...user 객체로 받아와야 하는 것이 아닌가?
     }
 
     public void update(MemoRequestDto requestDto) {
