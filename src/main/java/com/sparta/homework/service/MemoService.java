@@ -29,9 +29,8 @@ public class MemoService {
     @Transactional(readOnly = true)
     public Memo getCertainMemo(Long id){
         return memoRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("아이디 없음"));
-//        return memoRepository.findMemoById(id);
     }
-// 여기서 id를 찾기만 하고...안넘겨주나?
+
 
 
     @Transactional
