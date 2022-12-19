@@ -1,5 +1,7 @@
 package com.sparta.homework.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.sparta.homework.dto.CommentsRequestDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,8 +17,9 @@ public class Comments {
     private Long id;
     @Column
     private String comment;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "MEMO_ID", nullable = false)
+    @JsonIgnore
     private Memo memo;
 
     public Comments(CommentsRequestDto requestDto, Memo memo){

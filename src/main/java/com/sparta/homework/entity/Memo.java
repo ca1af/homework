@@ -28,7 +28,7 @@ public class Memo extends Timestamped {
     @JoinColumn(name = "USER_ID", nullable = false)
     private User user;
 
-    @OneToMany
+    @OneToMany(mappedBy = "memo")
     List<Comments> comments = new ArrayList<>();
 
     public Memo(String title, String contents, User user) {

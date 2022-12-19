@@ -46,7 +46,6 @@ public class MemoService {
         } else {
             return null;
         }
-
     }
     @Transactional(readOnly = true)
     public List<Memo> getMemos(HttpServletRequest request) {
@@ -67,13 +66,14 @@ public class MemoService {
             UserRoleEnum userRoleEnum = user.getRole();
             System.out.println("role = " + userRoleEnum);
 
+            List<MemoResponseDto> responseDtos;
+
             if(userRoleEnum == UserRoleEnum.USER){
                 return memoRepository.findAllByUserIdOrderByCreatedAtDesc(user.getId());
             } else {
                 return memoRepository.findAll();
             }
         }
-
         else {
             return null;
         }

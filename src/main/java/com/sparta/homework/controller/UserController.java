@@ -17,16 +17,6 @@ public class UserController {
 
     private final UserService userService;
 
-    @GetMapping("/signup")
-    public ModelAndView signupPage() {
-        return new ModelAndView("signup");
-    }
-
-    @GetMapping("/login")
-    public ModelAndView loginPage() {
-        return new ModelAndView("login");
-    }
-
 //    @ResponseBody
     @PostMapping("/signup")
     public String signup(@RequestBody SignupRequestDto signupRequestDto) {

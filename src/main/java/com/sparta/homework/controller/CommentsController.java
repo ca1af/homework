@@ -3,8 +3,6 @@ package com.sparta.homework.controller;
 import com.sparta.homework.dto.CommentsRequestDto;
 import com.sparta.homework.dto.CommentsResponseDto;
 import com.sparta.homework.service.CommentsService;
-import com.sparta.homework.service.MemoService;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 

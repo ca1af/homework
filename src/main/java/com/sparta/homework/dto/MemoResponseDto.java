@@ -15,6 +15,7 @@ public class MemoResponseDto {
     private String contents;
     private List<Comments> comments;
 
+
     public MemoResponseDto(Memo memo) {
         this.id = memo.getId();
         this.title = memo.getTitle();
