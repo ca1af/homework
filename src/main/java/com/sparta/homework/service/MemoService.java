@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -25,7 +26,6 @@ public class MemoService {
 
     @Transactional
     public MemoResponseDto createMemo(MemoRequestDto requestDto, HttpServletRequest request) {
-
         String token = jwtUtil.resolveToken(request);
         Claims claims;
 
@@ -47,8 +47,9 @@ public class MemoService {
             return null;
         }
     }
+
     @Transactional(readOnly = true)
-    public List<Memo> getMemos(HttpServletRequest request) {
+    public List<MemoResponseDto> getMemos(HttpServletRequest request) {
         String token = jwtUtil.resolveToken(request);
         Claims claims;
 
@@ -66,25 +67,49 @@ public class MemoService {
             UserRoleEnum userRoleEnum = user.getRole();
             System.out.println("role = " + userRoleEnum);
 
-            List<MemoResponseDto> responseDtos;
-
+            List<Memo> memos;
             if(userRoleEnum == UserRoleEnum.USER){
-                return memoRepository.findAllByUserIdOrderByCreatedAtDesc(user.getId());
+                memos = memoRepository.findAllByUserIdOrderByCreatedAtDesc(user.getId());
             } else {
-                return memoRepository.findAll();
+                memos = memoRepository.findAll();
             }
+            return memos.stream().map(MemoResponseDto::new).collect(Collectors.toList());
         }
         else {
             return null;
         }
     }
 
+//    @Transactional(readOnly = true)
+//    public Memo getCertainMemo(Long id){
+//        return memoRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("아이디 없음"));
+//    }
+
     @Transactional(readOnly = true)
-    public Memo getCertainMemo(Long id){
-        return memoRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("아이디 없음"));
+    public MemoResponseDto getCertainMemo(Long id, HttpServletRequest request) {
+        String token = jwtUtil.resolveToken(request);
+        Claims claims;
+
+        if (token != null) {
+            if (jwtUtil.validateToken(token)) {
+                claims = jwtUtil.getUserInfoFromToken(token);
+            } else {
+                throw new IllegalArgumentException("Token Error");
+            }
+
+            User user = userRepository.findByUsername(claims.getSubject()).orElseThrow(
+                    () -> new IllegalArgumentException("사용자가 존재하지 않습니다.")
+            );
+            UserRoleEnum userRoleEnum = user.getRole();
+            Memo memo;
+            if (userRoleEnum == UserRoleEnum.USER) {
+                memo = memoRepository.findByIdAndUserId(id, user.getId()).orElseThrow(() -> new IllegalArgumentException("해당 메모가 없습니다"));
+            } else {
+                memo = memoRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("ADMIN - 해당 메모 없음"));
+            }
+            return new MemoResponseDto(memo);
+        } else return null;
     }
-
-
 
     @Transactional
     public String update(Long id, MemoRequestDto requestDto, HttpServletRequest request) {
@@ -102,8 +127,8 @@ public class MemoService {
                     () -> new IllegalArgumentException("사용자가 존재하지 않습니다.")
             );
             UserRoleEnum userRoleEnum = user.getRole();
-            Memo memo;
 
+            Memo memo;
             if (userRoleEnum == UserRoleEnum.USER){
                 memo = memoRepository.findByIdAndUserId(id, user.getId()).orElseThrow(
                         () -> new NullPointerException("해당 메모는 존재하지 않습니다.")

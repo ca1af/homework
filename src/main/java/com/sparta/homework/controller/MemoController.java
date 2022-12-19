@@ -22,13 +22,13 @@ public class MemoController {
     }
 
     @GetMapping("/api/memos")
-    public List<Memo> getMemos(HttpServletRequest request) {
+    public List<MemoResponseDto> getMemos(HttpServletRequest request) {
         return memoService.getMemos(request);
     }
 
     @GetMapping("/api/memos/{id}")
-    public Memo getCertainMemos(@PathVariable Long id){
-        return memoService.getCertainMemo(id);
+    public MemoResponseDto getCertainMemos(@PathVariable Long id, HttpServletRequest request){
+        return memoService.getCertainMemo(id, request);
     }
 
 // id 를 입력받는데 왜 안나올까?...PathVariable로 id 줬고...왜안되냐?

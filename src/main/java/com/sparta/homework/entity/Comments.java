@@ -1,7 +1,6 @@
 package com.sparta.homework.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.sparta.homework.dto.CommentsRequestDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
