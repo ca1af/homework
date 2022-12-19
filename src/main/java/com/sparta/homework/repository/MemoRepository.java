@@ -13,6 +13,6 @@ public interface MemoRepository extends JpaRepository<Memo, Long> {
     Optional<Memo> deleteMemoByUserIdAndId(Long id, Long userId);
     List<Memo> findAllByUserIdOrderByCreatedAtDesc(Long userId);
     Optional<Memo> findByIdAndUserId(Long id, Long userId);
-
+    Optional<Memo> deleteMemoById(Long id);
 
 }

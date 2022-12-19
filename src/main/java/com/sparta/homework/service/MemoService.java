@@ -2,7 +2,6 @@ package com.sparta.homework.service;
 
 import com.sparta.homework.dto.MemoRequestDto;
 import com.sparta.homework.dto.MemoResponseDto;
-import com.sparta.homework.dto.MessageDto;
 import com.sparta.homework.entity.Memo;
 import com.sparta.homework.entity.User;
 import com.sparta.homework.entity.UserRoleEnum;
@@ -88,7 +87,7 @@ public class MemoService {
 
 
     @Transactional
-    public Long update(Long id, MemoRequestDto requestDto, HttpServletRequest request) {
+    public String update(Long id, MemoRequestDto requestDto, HttpServletRequest request) {
         String token = jwtUtil.resolveToken(request);
         Claims claims;
 
@@ -102,22 +101,30 @@ public class MemoService {
             User user = userRepository.findByUsername(claims.getSubject()).orElseThrow(
                     () -> new IllegalArgumentException("사용자가 존재하지 않습니다.")
             );
+            UserRoleEnum userRoleEnum = user.getRole();
+            Memo memo;
 
-            Memo memo = memoRepository.findByIdAndUserId(id, user.getId()).orElseThrow(
-                    () -> new NullPointerException("해당 메모는 존재하지 않습니다.")
-            );
+            if (userRoleEnum == UserRoleEnum.USER){
+                memo = memoRepository.findByIdAndUserId(id, user.getId()).orElseThrow(
+                        () -> new NullPointerException("해당 메모는 존재하지 않습니다.")
+                );
+                memo.update(requestDto);
+            } else {
+                memo = memoRepository.findById(id).orElseThrow(
+                        () -> new NullPointerException("ADMIN - 메모가 존재하지 않습니다.")
+                );
+                memo.update(requestDto);
+            }
 
-            memo.update(requestDto);
-
-        return memo.getId();
+        return "수정 완료";
     }else{
-            return null;
+            return "수정 실패";
         }
     }
 
 
     @Transactional
-    public MessageDto deleteMemo(Long id, HttpServletRequest request) {
+    public String deleteMemo(Long id, HttpServletRequest request) {
         String token = jwtUtil.resolveToken(request);
         Claims claims;
 
@@ -132,18 +139,23 @@ public class MemoService {
                     () -> new IllegalArgumentException("사용자가 존재하지 않습니다.")
             );
 
-            Memo memo = memoRepository.findByIdAndUserId(id, user.getId()).orElseThrow(
-                    () -> new NullPointerException("해당 메모는 존재하지 않습니다.")
-            );
+            UserRoleEnum userRoleEnum = user.getRole();
+            Memo memo;
 
-            memoRepository.deleteMemoByUserIdAndId(memo.getId(), user.getId());
-
-            MessageDto messageDto = new MessageDto();
-            messageDto.setMessage("삭제가 완료되었습니다.");
-
-            return messageDto;
+            if (userRoleEnum == UserRoleEnum.USER){
+                memo = memoRepository.findByIdAndUserId(id, user.getId()).orElseThrow(
+                        () -> new NullPointerException("해당 메모는 존재하지 않습니다.")
+                );
+                memoRepository.deleteMemoByUserIdAndId(memo.getId(), user.getId());
+            } else {
+                memo = memoRepository.findById(id).orElseThrow(
+                        () -> new NullPointerException("ADMIN - 메모가 존재하지 않습니다.")
+                );
+                memoRepository.deleteMemoById(memo.getId());
+            }
+            return "삭제완료";
         }else{
-            return null;
+            return "삭제 실패";
         }
     }
 }
