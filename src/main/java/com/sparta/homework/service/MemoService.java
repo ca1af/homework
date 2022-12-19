@@ -5,6 +5,7 @@ import com.sparta.homework.dto.MemoResponseDto;
 import com.sparta.homework.dto.MessageDto;
 import com.sparta.homework.entity.Memo;
 import com.sparta.homework.entity.User;
+import com.sparta.homework.entity.UserRoleEnum;
 import com.sparta.homework.jwt.JwtUtil;
 import com.sparta.homework.repository.MemoRepository;
 import com.sparta.homework.repository.UserRepository;
@@ -12,7 +13,6 @@ import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -65,8 +65,16 @@ public class MemoService {
                     () -> new IllegalArgumentException("사용자가 존재하지 않습니다.")
             );
 
-            return memoRepository.findAllByUserIdOrderByCreatedAtDesc(user.getId());
+            UserRoleEnum userRoleEnum = user.getRole();
+            System.out.println("role = " + userRoleEnum);
+
+            if(userRoleEnum == UserRoleEnum.USER){
+                return memoRepository.findAllByUserIdOrderByCreatedAtDesc(user.getId());
+            } else {
+                return memoRepository.findAll();
+            }
         }
+
         else {
             return null;
         }
@@ -115,7 +123,6 @@ public class MemoService {
 
         if (token != null) {
             if (jwtUtil.validateToken(token)) {
-
                 claims = jwtUtil.getUserInfoFromToken(token);
             } else {
                 throw new IllegalArgumentException("Token Error");
@@ -138,7 +145,5 @@ public class MemoService {
         }else{
             return null;
         }
-
     }
-
 }

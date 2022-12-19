@@ -45,5 +45,4 @@ public class MemoController {
     public MessageDto deleteMemo(@PathVariable Long id, HttpServletRequest request) {
         return memoService.deleteMemo(id, request);
     }
-
 }

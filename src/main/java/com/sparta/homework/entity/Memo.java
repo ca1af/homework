@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Entity
@@ -22,11 +24,12 @@ public class Memo extends Timestamped {
     @Column(nullable = false)
     private String contents;
 
-
     @ManyToOne
     @JoinColumn(name = "USER_ID", nullable = false)
     private User user;
 
+    @OneToMany
+    List<Comments> comments = new ArrayList<>();
 
     public Memo(String title, String contents, User user) {
         this.contents = contents;

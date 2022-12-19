@@ -31,8 +31,12 @@ public class UserController {
     @PostMapping("/signup")
     public String signup(@RequestBody SignupRequestDto signupRequestDto) {
         userService.signup(signupRequestDto);
+        if (signupRequestDto.isAdmin()){
+            return "ADMIN";
+        } else{
         return "Ok";
     }
+}
 
 //    @ResponseBody
     @PostMapping("/login")
