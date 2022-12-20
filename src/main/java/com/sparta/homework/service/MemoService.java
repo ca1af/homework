@@ -40,7 +40,7 @@ public class MemoService {
                     () -> new IllegalArgumentException("사용자가 존재하지 않습니다")
             );
 
-            Memo memo = memoRepository.saveAndFlush(new Memo(requestDto, user));
+            Memo memo = memoRepository.saveAndFlush(new Memo(requestDto, user, user.getUsername()));
 
             return new MemoResponseDto(memo);
         } else {
