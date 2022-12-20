@@ -29,4 +29,8 @@ public class MemoResponseDto extends Timestamped {
         this.createdAt = memo.getCreatedAt();
         this.modifiedAt = memo.getModifiedAt();
     }
+
+    public static MemoResponseDto from(Memo memo){
+        return new MemoResponseDto(memo);
+    }
 }

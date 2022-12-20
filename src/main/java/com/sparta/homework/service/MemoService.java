@@ -30,7 +30,7 @@ public class MemoService {
 
         Memo memo = memoRepository.saveAndFlush(new Memo(requestDto, user.get(), user.get().getUsername()));
 
-        return new MemoResponseDto(memo);
+        return MemoResponseDto.from(memo);
     }
 
     @Transactional(readOnly = true)
@@ -64,7 +64,7 @@ public class MemoService {
             memo = memoRepository.findById(id)
                     .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "ADMIN - 해당 메모 없음"));
         }
-        return new MemoResponseDto(memo);
+        return MemoResponseDto.from(memo);
     }
 
     @Transactional
