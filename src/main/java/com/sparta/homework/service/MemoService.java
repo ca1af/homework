@@ -5,7 +5,6 @@ import com.sparta.homework.dto.MemoResponseDto;
 import com.sparta.homework.entity.Memo;
 import com.sparta.homework.entity.User;
 import com.sparta.homework.entity.UserRoleEnum;
-import com.sparta.homework.jwt.JwtUtil;
 import com.sparta.homework.repository.MemoRepository;
 import com.sparta.homework.repository.UserRepository;
 import lombok.RequiredArgsConstructor;

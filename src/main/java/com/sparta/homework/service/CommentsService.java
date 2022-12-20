@@ -6,7 +6,6 @@ import com.sparta.homework.entity.Comments;
 import com.sparta.homework.entity.Memo;
 import com.sparta.homework.entity.User;
 import com.sparta.homework.entity.UserRoleEnum;
-import com.sparta.homework.jwt.JwtUtil;
 import com.sparta.homework.repository.CommentsRepository;
 import com.sparta.homework.repository.MemoRepository;
 import com.sparta.homework.repository.UserRepository;
@@ -24,7 +23,6 @@ public class CommentsService {
     private final CommentsRepository commentsRepository;
     private final MemoRepository memoRepository;
     private final UserRepository userRepository;
-    private final JwtUtil jwtUtil;
 
     public CommentsResponseDto createComment(CommentsRequestDto requestDto, Long id, String userName) {
         Optional<User> user = userRepository.findByUsername(userName);
