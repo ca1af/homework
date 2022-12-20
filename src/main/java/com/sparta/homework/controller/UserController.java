@@ -2,11 +2,13 @@ package com.sparta.homework.controller;
 
 import com.sparta.homework.dto.LoginRequestDto;
 import com.sparta.homework.dto.SignupRequestDto;
+import com.sparta.homework.jwt.JwtUtil;
 import com.sparta.homework.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -14,30 +16,25 @@ import javax.servlet.http.HttpServletResponse;
 @RestController
 @RequestMapping("/api/user")
 public class UserController {
-
     private final UserService userService;
 
-    @GetMapping("/signup")
-    public ModelAndView signupPage() {
-        return new ModelAndView("signup");
-    }
 
-    @GetMapping("/login")
-    public ModelAndView loginPage() {
-        return new ModelAndView("login");
-    }
-
-//    @ResponseBody
+    //    @ResponseBody
     @PostMapping("/signup")
     public String signup(@RequestBody SignupRequestDto signupRequestDto) {
         userService.signup(signupRequestDto);
-        return "Ok";
+        if (signupRequestDto.isAdmin()) {
+            return "ADMIN";
+        } else {
+            return "Ok";
+        }
     }
 
-//    @ResponseBody
+    //    @ResponseBody
     @PostMapping("/login")
     public String login(@RequestBody LoginRequestDto loginRequestDto, HttpServletResponse response) {
-        userService.login(loginRequestDto, response);
+        String generatedToken = userService.login(loginRequestDto);
+        response.addHeader(JwtUtil.AUTHORIZATION_HEADER, generatedToken);
         return "success";
     }
 }
