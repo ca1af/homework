@@ -21,14 +21,17 @@ public class Comments extends Timestamped{
     @JsonIgnore
     private Memo memo;
 
-    @ManyToOne
-    @JoinColumn(name = "USER_ID")
-//    @JsonIgnore
-    private User user;
+//    @ManyToOne
+//    @JoinColumn(name = "USER_ID")
+////    @JsonIgnore
+//    private User user;
+    @Column
+    private String userName;
 
-    public Comments(CommentsRequestDto requestDto, Memo memo){
+    public Comments(CommentsRequestDto requestDto, Memo memo, String userName){
         this.comment = requestDto.getComment();
         this.memo = memo;
+        this.userName = userName;
     }
 
     public void update(CommentsRequestDto requestDto){

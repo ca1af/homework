@@ -27,15 +27,22 @@ public class CommentsService {
 
     public CommentsResponseDto createComment(CommentsRequestDto requestDto, Long id, HttpServletRequest request) {
         String token = jwtUtil.resolveToken(request);
+        Claims claims;
 
         if (token != null) {
-            if (!jwtUtil.validateToken(token)) {
-                throw new IllegalArgumentException("토큰 에러");
+            if (jwtUtil.validateToken(token)) {
+                claims = jwtUtil.getUserInfoFromToken(token);
+            } else {
+                throw new IllegalArgumentException("Token Error");
             }
+
+            User user = userRepository.findByUsername(claims.getSubject()).orElseThrow(
+                    () -> new IllegalArgumentException("사용자가 존재하지 않습니다.")
+            );
 
             Memo memo = memoRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("해당하는 메모id가 없다."));
 
-            Comments comment = commentsRepository.saveAndFlush(new Comments(requestDto, memo));
+            Comments comment = commentsRepository.saveAndFlush(new Comments(requestDto, memo, user.getUsername()));
 
             return new CommentsResponseDto(comment);
         } else {
@@ -62,7 +69,7 @@ public class CommentsService {
 
             Comments comment;
             if (userRoleEnum == UserRoleEnum.USER) {
-                comment = commentsRepository.findByIdAndUserId(id, user.getId()).orElseThrow(
+                comment = commentsRepository.findByIdAndUserName(id, user.getUsername()).orElseThrow(
                         () -> new NullPointerException("해당 댓글은 존재하지 않습니다.")
                 );
                 comment.update(requestDto);
@@ -96,19 +103,19 @@ public class CommentsService {
             UserRoleEnum userRoleEnum = user.getRole();
 
             if (userRoleEnum == UserRoleEnum.USER) {
-                commentsRepository.findByIdAndUserId(id, user.getId()).orElseThrow(
+                commentsRepository.findByIdAndUserName(id, user.getUsername()).orElseThrow(
                         () -> new NullPointerException("해당 댓글은 존재하지 않습니다.")
                 );
-                commentsRepository.deleteCommentsByIdAndUserId(id, user.getId());
+                commentsRepository.deleteCommentsByIdAndUserName(id, user.getUsername());
             } else {
                 commentsRepository.findById(id).orElseThrow(
                         () -> new NullPointerException("ADMIN - 댓글이 존재하지 않습니다.")
                 );
                 commentsRepository.deleteCommentsById(id);
             }
-            return "수정 완료";
+            return "삭제 완료";
         }
-        return "수정 실패";
+        return "삭제 실패";
 
     }
 }
