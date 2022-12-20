@@ -2,143 +2,115 @@ package com.sparta.homework.service;
 
 import com.sparta.homework.dto.MemoRequestDto;
 import com.sparta.homework.dto.MemoResponseDto;
-import com.sparta.homework.dto.MessageDto;
 import com.sparta.homework.entity.Memo;
 import com.sparta.homework.entity.User;
+import com.sparta.homework.entity.UserRoleEnum;
 import com.sparta.homework.jwt.JwtUtil;
 import com.sparta.homework.repository.MemoRepository;
 import com.sparta.homework.repository.UserRepository;
-import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.server.ResponseStatusException;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class MemoService {
     private final MemoRepository memoRepository;
     private final UserRepository userRepository;
-    private final JwtUtil jwtUtil;
 
     @Transactional
-    public MemoResponseDto createMemo(MemoRequestDto requestDto, HttpServletRequest request) {
+    public MemoResponseDto createMemo(MemoRequestDto requestDto) {
 
-        String token = jwtUtil.resolveToken(request);
-        Claims claims;
+        Optional<User> user = userRepository.findByUsername(requestDto.getUsername());
 
-        if (token != null){
-            if (jwtUtil.validateToken(token)){
-                claims = jwtUtil.getUserInfoFromToken(token);
-            } else {
-                throw new IllegalArgumentException("토큰 에러");
-            }
+        Memo memo = memoRepository.saveAndFlush(new Memo(requestDto, user.get(), user.get().getUsername()));
 
-            User user = userRepository.findByUsername(claims.getSubject()).orElseThrow(
-                    () -> new IllegalArgumentException("사용자가 존재하지 않습니다")
-            );
+        return new MemoResponseDto(memo);
+    }
 
-            Memo memo = memoRepository.saveAndFlush(new Memo(requestDto, user));
+    @Transactional(readOnly = true)
+    public List<MemoResponseDto> getMemos(String userName) {
+        Optional<User> user = userRepository.findByUsername(userName);
 
-            return new MemoResponseDto(memo);
+        UserRoleEnum userRoleEnum = user.get().getRole();
+        System.out.println("role = " + userRoleEnum);
+
+        List<Memo> memos;
+        if (userRoleEnum == UserRoleEnum.USER) {
+            memos = memoRepository.findAllByUserIdOrderByCreatedAtDesc(user.get().getId());
         } else {
-            return null;
+            memos = memoRepository.findAll();
         }
-
-    }
-    @Transactional(readOnly = true)
-    public List<Memo> getMemos(HttpServletRequest request) {
-        String token = jwtUtil.resolveToken(request);
-        Claims claims;
-
-        if (token != null) {
-            if (jwtUtil.validateToken(token)) {
-                claims = jwtUtil.getUserInfoFromToken(token);
-            } else {
-                throw new IllegalArgumentException("Token Error");
-            }
-
-            User user = userRepository.findByUsername(claims.getSubject()).orElseThrow(
-                    () -> new IllegalArgumentException("사용자가 존재하지 않습니다.")
-            );
-
-            return memoRepository.findAllByUserIdOrderByCreatedAtDesc(user.getId());
-        }
-        else {
-            return null;
-        }
+        return memos.stream().map(MemoResponseDto::new).collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
-    public Memo getCertainMemo(Long id){
-        return memoRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("아이디 없음"));
+    public MemoResponseDto getCertainMemo(Long id, String userName) {
+
+        Optional<User> user = userRepository.findByUsername(userName);
+
+        UserRoleEnum userRoleEnum = user.get().getRole();
+
+        Memo memo;
+        if (userRoleEnum == UserRoleEnum.USER) {
+            memo = memoRepository.findByIdAndUserId(id, user.get().getId())
+                    .orElseThrow(() ->  new ResponseStatusException(HttpStatus.BAD_REQUEST, "작성자만 조회할 수 있습니다."));
+        } else {
+            memo = memoRepository.findById(id)
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "ADMIN - 해당 메모 없음"));
+        }
+        return new MemoResponseDto(memo);
     }
-
-
 
     @Transactional
-    public Long update(Long id, MemoRequestDto requestDto, HttpServletRequest request) {
-        String token = jwtUtil.resolveToken(request);
-        Claims claims;
+    public String update(Long id, MemoRequestDto requestDto, String userName) {
 
-        if (token != null) {
-            if (jwtUtil.validateToken(token)) {
-                claims = jwtUtil.getUserInfoFromToken(token);
-            } else {
-                throw new IllegalArgumentException("Token Error");
-            }
 
-            User user = userRepository.findByUsername(claims.getSubject()).orElseThrow(
-                    () -> new IllegalArgumentException("사용자가 존재하지 않습니다.")
+        Optional<User> user = userRepository.findByUsername(userName);
+
+        UserRoleEnum userRoleEnum = user.get().getRole();
+        Memo memo;
+        if (userRoleEnum == UserRoleEnum.USER) {
+            memo = memoRepository.findByIdAndUserId(id, user.get().getId()).orElseThrow(
+                    () -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "작성자만 수정할 수 있습니다.")
             );
-
-            Memo memo = memoRepository.findByIdAndUserId(id, user.getId()).orElseThrow(
-                    () -> new NullPointerException("해당 메모는 존재하지 않습니다.")
-            );
-
             memo.update(requestDto);
-
-        return memo.getId();
-    }else{
-            return null;
+        } else {
+            memo = memoRepository.findById(id).orElseThrow(
+                    () ->  new ResponseStatusException(HttpStatus.BAD_REQUEST, "ADMIN - 메모가 존재하지 않습니다.")
+            );
+            memo.update(requestDto);
         }
-    }
 
+        return "수정 완료";
+    }
 
     @Transactional
-    public MessageDto deleteMemo(Long id, HttpServletRequest request) {
-        String token = jwtUtil.resolveToken(request);
-        Claims claims;
+    public String deleteMemo(Long id, String userName) {
+        Optional<User> user = userRepository.findByUsername(userName);
 
-        if (token != null) {
-            if (jwtUtil.validateToken(token)) {
+        UserRoleEnum userRoleEnum = user.get().getRole();
+        Memo memo;
 
-                claims = jwtUtil.getUserInfoFromToken(token);
-            } else {
-                throw new IllegalArgumentException("Token Error");
-            }
-
-            User user = userRepository.findByUsername(claims.getSubject()).orElseThrow(
-                    () -> new IllegalArgumentException("사용자가 존재하지 않습니다.")
+        if (userRoleEnum == UserRoleEnum.USER) {
+            memo = memoRepository.findByIdAndUserId(id, user.get().getId()).orElseThrow(
+                    () -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "작성자만 삭제할 수 있습니다.")
             );
-
-            Memo memo = memoRepository.findByIdAndUserId(id, user.getId()).orElseThrow(
-                    () -> new NullPointerException("해당 메모는 존재하지 않습니다.")
+            memoRepository.deleteMemoByUserIdAndId(memo.getId(), user.get().getId());
+        } else {
+            memo = memoRepository.findById(id).orElseThrow(
+                    () ->  new ResponseStatusException(HttpStatus.BAD_REQUEST, "ADMIN - 메모가 존재하지 않습니다.")
             );
-
-            memoRepository.deleteMemoByUserIdAndId(memo.getId(), user.getId());
-
-            MessageDto messageDto = new MessageDto();
-            messageDto.setMessage("삭제가 완료되었습니다.");
-
-            return messageDto;
-        }else{
-            return null;
+            memoRepository.deleteMemoById(memo.getId());
         }
-
+        return "삭제완료";
     }
-
 }
+
+

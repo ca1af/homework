@@ -22,17 +22,23 @@ public class User {
     @Column(nullable = false, unique = true)
     private String username;
 
-
     @Size(min = 8, max = 15)
-    @Pattern(regexp = "[a-zA-z0-9]+")
+    @Pattern(regexp = "^(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[^a-zA-Z0-9ㄱ-힣]).+$")
     @Column(nullable = false)
     private String password;
+
+    @Column(nullable = false)
+    @Enumerated(value = EnumType.STRING)
+    private UserRoleEnum role;
 
     @OneToMany
     List<Memo> memos = new ArrayList<>();
 
-    public User(String username, String password) {
+
+    public User(String username, String password, UserRoleEnum role) {
         this.username = username;
         this.password = password;
+        this.role = role;
     }
+
 }
