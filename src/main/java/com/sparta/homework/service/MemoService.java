@@ -29,8 +29,8 @@ public class MemoService {
         String token = jwtUtil.resolveToken(request);
         Claims claims;
 
-        if (token != null){
-            if (jwtUtil.validateToken(token)){
+        if (token != null) {
+            if (jwtUtil.validateToken(token)) {
                 claims = jwtUtil.getUserInfoFromToken(token);
             } else {
                 throw new IllegalArgumentException("토큰 에러");
@@ -68,14 +68,13 @@ public class MemoService {
             System.out.println("role = " + userRoleEnum);
 
             List<Memo> memos;
-            if(userRoleEnum == UserRoleEnum.USER){
+            if (userRoleEnum == UserRoleEnum.USER) {
                 memos = memoRepository.findAllByUserIdOrderByCreatedAtDesc(user.getId());
             } else {
                 memos = memoRepository.findAll();
             }
             return memos.stream().map(MemoResponseDto::new).collect(Collectors.toList());
-        }
-        else {
+        } else {
             return null;
         }
     }
@@ -129,7 +128,7 @@ public class MemoService {
             UserRoleEnum userRoleEnum = user.getRole();
 
             Memo memo;
-            if (userRoleEnum == UserRoleEnum.USER){
+            if (userRoleEnum == UserRoleEnum.USER) {
                 memo = memoRepository.findByIdAndUserId(id, user.getId()).orElseThrow(
                         () -> new NullPointerException("해당 메모는 존재하지 않습니다.")
                 );
@@ -141,8 +140,8 @@ public class MemoService {
                 memo.update(requestDto);
             }
 
-        return "수정 완료";
-    }else{
+            return "수정 완료";
+        } else {
             return "수정 실패";
         }
     }
@@ -167,7 +166,7 @@ public class MemoService {
             UserRoleEnum userRoleEnum = user.getRole();
             Memo memo;
 
-            if (userRoleEnum == UserRoleEnum.USER){
+            if (userRoleEnum == UserRoleEnum.USER) {
                 memo = memoRepository.findByIdAndUserId(id, user.getId()).orElseThrow(
                         () -> new NullPointerException("해당 메모는 존재하지 않습니다.")
                 );
@@ -179,7 +178,7 @@ public class MemoService {
                 memoRepository.deleteMemoById(memo.getId());
             }
             return "삭제완료";
-        }else{
+        } else {
             return "삭제 실패";
         }
     }

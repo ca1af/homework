@@ -23,7 +23,7 @@ public class User {
     private String username;
 
     @Size(min = 8, max = 15)
-    @Pattern(regexp = "^(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[^a-zA-Z0-9ㄱ-힣]).{8,15}$")
+    @Pattern(regexp = "^(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[^a-zA-Z0-9ㄱ-힣]).+$")
     @Column(nullable = false)
     private String password;
 

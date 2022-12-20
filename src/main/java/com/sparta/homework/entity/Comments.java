@@ -10,7 +10,7 @@ import javax.persistence.*;
 @Getter
 @NoArgsConstructor
 @Entity
-public class Comments {
+public class Comments extends Timestamped{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -20,6 +20,11 @@ public class Comments {
     @JoinColumn(name = "MEMO_ID", nullable = false)
     @JsonIgnore
     private Memo memo;
+
+    @ManyToOne
+    @JoinColumn(name = "USER_ID")
+//    @JsonIgnore
+    private User user;
 
     public Comments(CommentsRequestDto requestDto, Memo memo){
         this.comment = requestDto.getComment();
