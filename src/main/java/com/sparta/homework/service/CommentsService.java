@@ -31,7 +31,7 @@ public class CommentsService {
 
         Comments comment = commentsRepository.saveAndFlush(new Comments(requestDto, memo, user.get().getUsername()));
 
-        return new CommentsResponseDto(comment);
+        return CommentsResponseDto.from(comment);
     }
 
     @Transactional
