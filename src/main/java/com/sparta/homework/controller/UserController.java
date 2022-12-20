@@ -16,21 +16,21 @@ import javax.servlet.http.HttpServletResponse;
 @RestController
 @RequestMapping("/api/user")
 public class UserController {
-
     private final UserService userService;
 
-//    @ResponseBody
+
+    //    @ResponseBody
     @PostMapping("/signup")
     public String signup(@RequestBody SignupRequestDto signupRequestDto) {
         userService.signup(signupRequestDto);
-        if (signupRequestDto.isAdmin()){
+        if (signupRequestDto.isAdmin()) {
             return "ADMIN";
-        } else{
-        return "Ok";
+        } else {
+            return "Ok";
+        }
     }
-}
 
-//    @ResponseBody
+    //    @ResponseBody
     @PostMapping("/login")
     public String login(@RequestBody LoginRequestDto loginRequestDto, HttpServletResponse response) {
         String generatedToken = userService.login(loginRequestDto);
