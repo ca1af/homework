@@ -2,6 +2,8 @@
 
 ## API 명세서
 
+POST맨을 이용했습니다. 아래 링크에서 확인 할 수 있습니다.
+
 https://documenter.getpostman.com/view/24788145/2s8YzXtedY#d106912e-1f82-49ba-aacf-9e8d8c86cea0
 
 1. JWT를 사용하여 인증/인가를 구현 했을 때의 장점은 무엇일까요?
@@ -14,3 +16,8 @@ https://documenter.getpostman.com/view/24788145/2s8YzXtedY#d106912e-1f82-49ba-aa
 4. IoC / DI 에 대해 간략하게 설명해 주세요!
 - IoC는 제어의 역전의 개념이며, 개발자가 컨테이너에 제어권을 넘겨서 객체의 생성부터 생명주기 관리까지 위임하는 것을 말한다.
 - DI등에 대한 자세한 설명 https://velog.io/@calaf/%EC%8A%A4%ED%94%84%EB%A7%81%EC%9D%98-%ED%8A%B9%EC%A7%95%EA%B3%BC-%EC%9D%98%EC%A1%B4%EC%84%B1-%EC%A3%BC%EC%9E%85DI
+
+다듬는 과정에서 느낀 점을 아래 블로그에 정리했습니다.
+
+https://velog.io/@calaf/JWT-%ED%86%A0%ED%81%B0-%EC%9D%B8%EC%A6%9D%EC%9D%84-%EB%A7%A4%EC%84%9C%EB%93%9C%EB%A1%9C-%EA%B0%84%EC%86%8C%ED%99%94-%ED%95%98%EA%B8%B0
+https://velog.io/@calaf/%EC%8A%A4%ED%94%84%EB%A7%81-%EC%9E%85%EB%AC%B8-PreAuthorize-%EC%A4%80%EB%B9%84
