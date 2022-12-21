@@ -3,7 +3,6 @@ package com.sparta.homework.controller;
 import com.sparta.homework.dto.CommentsRequestDto;
 import com.sparta.homework.dto.CommentsResponseDto;
 import com.sparta.homework.dto.UtilDto;
-import com.sparta.homework.entity.User;
 import com.sparta.homework.entity.UserRoleEnum;
 import com.sparta.homework.service.CommentsService;
 import com.sparta.homework.util.CheckUtil;
