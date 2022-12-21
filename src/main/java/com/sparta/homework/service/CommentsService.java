@@ -37,41 +37,42 @@ public class CommentsService {
     @Transactional
     public String updateComment(CommentsRequestDto requestDto, Long id, String userName) {
         Optional<User> user = userRepository.findByUsername(userName);
-
-        UserRoleEnum userRoleEnum = user.get().getRole();
-
-        Comments comment;
-        if (userRoleEnum == UserRoleEnum.USER) {
-            comment = commentsRepository.findByIdAndUserName(id, user.get().getUsername()).orElseThrow(
-                    () ->new ResponseStatusException(HttpStatus.BAD_REQUEST, "작성자만 수정할 수 있습니다.")
-            );
-            comment.update(requestDto);
-        } else {
-            comment = commentsRepository.findById(id).orElseThrow(
-                    () ->  new ResponseStatusException(HttpStatus.BAD_REQUEST, "ADMIN - 댓글이 존재하지 않습니다.")
-            );
-            comment.update(requestDto);
-        }
+        Comments comment = commentsRepository.findByIdAndUserName(id, user.get().getUsername()).orElseThrow(
+                () -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "작성자만 수정할 수 있습니다."));
+        comment.update(requestDto);
         return "수정 완료";
     }
 
     @Transactional
-    public String deleteMemo(Long id, String userName) {
+    public String updateCommentAdmin(CommentsRequestDto requestDto, Long id, String userName) {
+        Optional<User> user = userRepository.findByUsername(userName);
+        Comments comment = commentsRepository.findById(id).orElseThrow(
+                () -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "ADMIN - 댓글이 존재하지 않습니다."));
+        comment.update(requestDto);
+        return "ADMIN-수정완료";
+    }
+
+    @Transactional
+    public String deleteComment(Long id, String userName) {
         Optional<User> user = userRepository.findByUsername(userName);
 
-        UserRoleEnum userRoleEnum = user.get().getRole();
+        commentsRepository.findByIdAndUserName(id, user.get().getUsername()).orElseThrow(
+                () -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "작성자만 삭제할 수 있습니다."));
 
-        if (userRoleEnum == UserRoleEnum.USER) {
-            commentsRepository.findByIdAndUserName(id, user.get().getUsername()).orElseThrow(
-                    () -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "작성자만 삭제할 수 있습니다.")
-            );
-            commentsRepository.deleteCommentsByIdAndUserName(id, user.get().getUsername());
-        } else {
-            commentsRepository.findById(id).orElseThrow(
-                    () ->  new ResponseStatusException(HttpStatus.BAD_REQUEST, "ADMIN - 댓글이 존재하지 않습니다.")
-            );
-            commentsRepository.deleteCommentsById(id);
-        }
+        commentsRepository.deleteCommentsByIdAndUserName(id, user.get().getUsername());
+        return "삭제 완료";
+    }
+
+
+
+    @Transactional
+    public String deleteCommentAdmin(Long id, String userName){
+        Optional<User> user = userRepository.findByUsername(userName);
+
+        commentsRepository.findById(id).orElseThrow(
+                () ->  new ResponseStatusException(HttpStatus.BAD_REQUEST, "ADMIN - 댓글이 존재하지 않습니다."));
+
+        commentsRepository.deleteCommentsById(id);
         return "삭제 완료";
     }
 }

@@ -23,6 +23,9 @@ public class UserController {
     @PostMapping("/signup")
     public String signup(@RequestBody SignupRequestDto signupRequestDto) {
         userService.signup(signupRequestDto);
+        // rolechecker ~
+        //if (role == user) 1번매서드.~
+        //else 2번 매서드.~
         if (signupRequestDto.isAdmin()) {
             return "ADMIN";
         } else {

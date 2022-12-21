@@ -37,77 +37,70 @@ public class MemoService {
     public List<MemoResponseDto> getMemos(String userName) {
         Optional<User> user = userRepository.findByUsername(userName);
 
-        UserRoleEnum userRoleEnum = user.get().getRole();
-        System.out.println("role = " + userRoleEnum);
-
         List<Memo> memos;
-        if (userRoleEnum == UserRoleEnum.USER) {
-            memos = memoRepository.findAllByUserIdOrderByCreatedAtDesc(user.get().getId());
-        } else {
-            memos = memoRepository.findAll();
-        }
+        memos = memoRepository.findAllByUserIdOrderByCreatedAtDesc(user.get().getId());
+
+        return memos.stream().map(MemoResponseDto::new).collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public List<MemoResponseDto> getMemosAdmin() {
+        List<Memo> memos = memoRepository.findAll();
         return memos.stream().map(MemoResponseDto::new).collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
     public MemoResponseDto getCertainMemo(Long id, String userName) {
-
         Optional<User> user = userRepository.findByUsername(userName);
 
-        UserRoleEnum userRoleEnum = user.get().getRole();
+        Memo memo = memoRepository.findByIdAndUserId(id, user.get().getId())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "작성자만 조회할 수 있습니다."));
 
-        Memo memo;
-        if (userRoleEnum == UserRoleEnum.USER) {
-            memo = memoRepository.findByIdAndUserId(id, user.get().getId())
-                    .orElseThrow(() ->  new ResponseStatusException(HttpStatus.BAD_REQUEST, "작성자만 조회할 수 있습니다."));
-        } else {
-            memo = memoRepository.findById(id)
-                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "ADMIN - 해당 메모 없음"));
-        }
+        return MemoResponseDto.from(memo);
+    }
+
+    @Transactional(readOnly = true)
+    public MemoResponseDto getCertainMemoAdmin(Long id) {
+        Memo memo = memoRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "ADMIN - 해당 메모 없음"));
         return MemoResponseDto.from(memo);
     }
 
     @Transactional
     public String update(Long id, MemoRequestDto requestDto, String userName) {
-
-
         Optional<User> user = userRepository.findByUsername(userName);
-
-        UserRoleEnum userRoleEnum = user.get().getRole();
-        Memo memo;
-        if (userRoleEnum == UserRoleEnum.USER) {
-            memo = memoRepository.findByIdAndUserId(id, user.get().getId()).orElseThrow(
-                    () -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "작성자만 수정할 수 있습니다.")
-            );
-            memo.update(requestDto);
-        } else {
-            memo = memoRepository.findById(id).orElseThrow(
-                    () ->  new ResponseStatusException(HttpStatus.BAD_REQUEST, "ADMIN - 메모가 존재하지 않습니다.")
-            );
-            memo.update(requestDto);
-        }
-
+        Memo memo = memoRepository.findByIdAndUserId(id, user.get().getId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "작성자만 수정할 수 있습니다."));
+        memo.update(requestDto);
         return "수정 완료";
+    }
+
+    @Transactional
+    public String updateAdmin(Long id, MemoRequestDto requestDto) {
+        Memo memo = memoRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "ADMIN - 메모가 존재하지 않습니다."));
+        memo.update(requestDto);
+        return "수정완료";
     }
 
     @Transactional
     public String deleteMemo(Long id, String userName) {
         Optional<User> user = userRepository.findByUsername(userName);
 
-        UserRoleEnum userRoleEnum = user.get().getRole();
-        Memo memo;
+        Memo memo = memoRepository.findByIdAndUserId(id, user.get().getId()).orElseThrow(
+                () -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "작성자만 삭제할 수 있습니다.")
+        );
 
-        if (userRoleEnum == UserRoleEnum.USER) {
-            memo = memoRepository.findByIdAndUserId(id, user.get().getId()).orElseThrow(
-                    () -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "작성자만 삭제할 수 있습니다.")
-            );
-            memoRepository.deleteMemoByUserIdAndId(memo.getId(), user.get().getId());
-        } else {
-            memo = memoRepository.findById(id).orElseThrow(
-                    () ->  new ResponseStatusException(HttpStatus.BAD_REQUEST, "ADMIN - 메모가 존재하지 않습니다.")
-            );
-            memoRepository.deleteMemoById(memo.getId());
-        }
+        memoRepository.deleteMemoByUserIdAndId(memo.getId(), user.get().getId());
+
+        return "삭제완료";
+    }
+
+
+    @Transactional
+    public String deleteMemoAdmin(Long id) {
+        Memo memo = memoRepository.findById(id).orElseThrow(
+                () -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "ADMIN - 메모가 존재하지 않습니다.")
+        );
+        memoRepository.deleteMemoById(memo.getId());
         return "삭제완료";
     }
 }

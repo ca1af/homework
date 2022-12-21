@@ -2,11 +2,14 @@ package com.sparta.homework.controller;
 
 import com.sparta.homework.dto.MemoRequestDto;
 import com.sparta.homework.dto.MemoResponseDto;
-import com.sparta.homework.entity.User;
+import com.sparta.homework.dto.UtilDto;
+import com.sparta.homework.entity.UserRoleEnum;
 import com.sparta.homework.service.MemoService;
 import com.sparta.homework.util.CheckUtil;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -26,29 +29,65 @@ public class MemoController {
 
     @GetMapping("/api/memos")
     public List<MemoResponseDto> getMemos(HttpServletRequest request) {
-        User user = checkUtil.tokenChecker(request);
-        return memoService.getMemos(user.getUsername());
+        UtilDto utilDto = checkUtil.tokenChecker(request);
+        return memoService.getMemos(utilDto.getUsername());
+    }
+
+    @GetMapping("/api/admin/memos")
+    public List<MemoResponseDto> getMemosAdmin(HttpServletRequest request) {
+        UtilDto utilDto = checkUtil.tokenChecker(request);
+        if (utilDto.getUserRoleEnum() == UserRoleEnum.USER) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "관리자만 사용 가능합니다");
+        } else {
+            return memoService.getMemosAdmin();
+        }
     }
 
     @GetMapping("/api/memos/{id}")
     public MemoResponseDto getCertainMemos(@PathVariable Long id, HttpServletRequest request) {
-        User user = checkUtil.tokenChecker(request);
-        return memoService.getCertainMemo(id, user.getUsername());
+        UtilDto utilDto = checkUtil.tokenChecker(request);
+        return memoService.getCertainMemo(id, utilDto.getUsername());
     }
 
-// id 를 입력받는데 왜 안나올까?...PathVariable로 id 줬고...왜안되냐?
+    @GetMapping("/api/admin/memos/{id}")
+    public MemoResponseDto getCertainMemosAdmin(@PathVariable Long id, HttpServletRequest request) {
+        UtilDto utilDto = checkUtil.tokenChecker(request);
+        if (utilDto.getUserRoleEnum() == UserRoleEnum.USER) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "관리자만 사용 가능합니다");
+        } else {
+            return memoService.getCertainMemoAdmin(id);
+        }
+    }
 
     @PutMapping("/api/memos/{id}")
     public String updateMemo(@PathVariable Long id, @RequestBody MemoRequestDto requestDto, HttpServletRequest request) {
-        User user = checkUtil.tokenChecker(request);
-        return memoService.update(id, requestDto, user.getUsername());
+        UtilDto utilDto = checkUtil.tokenChecker(request);
+        return memoService.update(id, requestDto, utilDto.getUsername());
     }
 
-    //@RequestBody는 json으로 보냈을 때 객체 형태로 받아온다.
+    @PutMapping("/api/admin/memos/{id}")
+    public String updateMemoAdmin(@PathVariable Long id, @RequestBody MemoRequestDto requestDto, HttpServletRequest request) {
+        UtilDto utilDto = checkUtil.tokenChecker(request);
+        if (utilDto.getUserRoleEnum() == UserRoleEnum.USER) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "관리자만 사용 가능합니다");
+        } else {
+            return memoService.updateAdmin(id,requestDto);
+        }
+    }
 
     @DeleteMapping("/api/memos/{id}")
     public String deleteMemo(@PathVariable Long id, HttpServletRequest request) {
-        User user = checkUtil.tokenChecker(request);
-        return memoService.deleteMemo(id, user.getUsername());
+        UtilDto utilDto = checkUtil.tokenChecker(request);
+        return memoService.deleteMemo(id, utilDto.getUsername());
+    }
+
+    @DeleteMapping("/api/admin/memos/{id}")
+    public String deleteMemoAdmin(@PathVariable Long id, HttpServletRequest request) {
+        UtilDto utilDto = checkUtil.tokenChecker(request);
+        if (utilDto.getUserRoleEnum() == UserRoleEnum.USER) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "관리자만 사용 가능합니다");
+        } else {
+            return memoService.deleteMemoAdmin(id);
+        }
     }
 }
