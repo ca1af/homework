@@ -19,5 +19,7 @@ https://documenter.getpostman.com/view/24788145/2s8YzXtedY#d106912e-1f82-49ba-aa
 
 다듬는 과정에서 느낀 점을 아래 블로그에 정리했습니다.
 
+1번
 https://velog.io/@calaf/JWT-%ED%86%A0%ED%81%B0-%EC%9D%B8%EC%A6%9D%EC%9D%84-%EB%A7%A4%EC%84%9C%EB%93%9C%EB%A1%9C-%EA%B0%84%EC%86%8C%ED%99%94-%ED%95%98%EA%B8%B0
+2번
 https://velog.io/@calaf/%EC%8A%A4%ED%94%84%EB%A7%81-%EC%9E%85%EB%AC%B8-PreAuthorize-%EC%A4%80%EB%B9%84
