@@ -13,6 +13,7 @@ public class CommentsResponseDto {
         this.comment = comments.getComment();
     }
 
+
     public static CommentsResponseDto from(Comments comments){
         return new CommentsResponseDto(comments);
     }

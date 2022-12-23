@@ -38,9 +38,9 @@ public class CommentsController {
     public String updateCommentAdmin(@PathVariable Long id, @RequestBody CommentsRequestDto requestDto, HttpServletRequest request) {
         UtilDto utilDto = checkUtil.tokenChecker(request);
         if (utilDto.getUserRoleEnum() == UserRoleEnum.USER) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "관리자만 사용 가능합니다");
+            throw new IllegalArgumentException("이것은 메시지다.");
         } else {
-            return commentsService.updateCommentAdmin(requestDto, id, utilDto.getUsername());
+            return commentsService.updateCommentAdmin(requestDto, id);
         }
     }
 

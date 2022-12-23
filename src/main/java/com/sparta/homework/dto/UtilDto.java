@@ -15,8 +15,8 @@ public class UtilDto {
         this.username = user.getUsername();
         this.userRoleEnum = user.getRole();
     }
-    public static UtilDto from(Optional<User> user){
-        return new UtilDto(user.get());
+    public static UtilDto from(User user){
+        return new UtilDto(user);
     }
 
 }

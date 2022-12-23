@@ -30,7 +30,7 @@ public class Memo extends Timestamped {
     private String userName;
 
     @OrderBy(value = "createdAt DESC")
-    @OneToMany(mappedBy = "memo")
+    @OneToMany(mappedBy = "memo", fetch = FetchType.LAZY)
     List<Comments> comments = new ArrayList<>();
 
     public Memo(String title, String contents, User user, String userName) {
@@ -40,7 +40,7 @@ public class Memo extends Timestamped {
         this.userName = userName;
     }
 
-    public Memo(MemoRequestDto requestDto, User user, String userName) {
+    public Memo(MemoRequestDto requestDto, User user) {
         this.contents = requestDto.getContents();
         this.title = requestDto.getTitle();
         this.userName = user.getUsername();

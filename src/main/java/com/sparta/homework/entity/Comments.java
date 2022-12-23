@@ -15,18 +15,14 @@ public class Comments extends Timestamped{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column
+    private String userName;
+    @Column
     private String comment;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "MEMO_ID", nullable = false)
-    @JsonIgnore
+    // JsonIgnore는 comments에서 memo를 무시하라는 어노테이션. (Json 만들 때)
     private Memo memo;
-
-//    @ManyToOne
-//    @JoinColumn(name = "USER_ID")
-////    @JsonIgnore
-//    private User user;
-    @Column
-    private String userName;
+    //comments -> memo -> getComments -> emmo...~ 오류 200줄
 
     public Comments(CommentsRequestDto requestDto, Memo memo, String userName){
         this.comment = requestDto.getComment();
@@ -34,9 +30,8 @@ public class Comments extends Timestamped{
         this.userName = userName;
     }
 
+
     public void update(CommentsRequestDto requestDto){
         this.comment = requestDto.getComment();
     }
-// 전부 USER_ID로는 원래 안함. -> 의존관계를 잘 설정해야함.
-// 부모와 자식 잘 설정해서, 부모의 Key를 자식이 Join하자.
 }

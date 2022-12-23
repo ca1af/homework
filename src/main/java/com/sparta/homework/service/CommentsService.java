@@ -26,11 +26,8 @@ public class CommentsService {
 
     public CommentsResponseDto createComment(CommentsRequestDto requestDto, Long id, String userName) {
         Optional<User> user = userRepository.findByUsername(userName);
-
         Memo memo = memoRepository.findById(id).orElseThrow(() ->  new ResponseStatusException(HttpStatus.BAD_REQUEST, "해당하는 메모id가 없다."));
-
         Comments comment = commentsRepository.saveAndFlush(new Comments(requestDto, memo, user.get().getUsername()));
-
         return CommentsResponseDto.from(comment);
     }
 
@@ -44,8 +41,7 @@ public class CommentsService {
     }
 
     @Transactional
-    public String updateCommentAdmin(CommentsRequestDto requestDto, Long id, String userName) {
-        Optional<User> user = userRepository.findByUsername(userName);
+    public String updateCommentAdmin(CommentsRequestDto requestDto, Long id) {
         Comments comment = commentsRepository.findById(id).orElseThrow(
                 () -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "ADMIN - 댓글이 존재하지 않습니다."));
         comment.update(requestDto);
@@ -62,7 +58,6 @@ public class CommentsService {
         commentsRepository.deleteCommentsByIdAndUserName(id, user.get().getUsername());
         return "삭제 완료";
     }
-
 
 
     @Transactional

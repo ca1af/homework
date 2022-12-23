@@ -7,7 +7,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 @NoArgsConstructor
@@ -16,21 +18,26 @@ public class MemoResponseDto extends Timestamped {
     private String userName;
     private String title;
     private String contents;
-    private List<Comments> comments;
+    private List<CommentsResponseDto> commentList;
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
 
-    public MemoResponseDto(Memo memo) {
+    private MemoResponseDto(Memo memo) {
         this.id = memo.getId();
         this.userName = memo.getUserName();
         this.title = memo.getTitle();
         this.contents = memo.getContents();
-        this.comments = memo.getComments();
+//        List<CommentsResponseDto> list1 = new ArrayList<>();
+//        for (Comments comments : memo.getComments()) {
+//            list1.add(CommentsResponseDto.from(comments));
+//        }
+//        this.commentList = list1;
+        this.commentList = memo.getComments().stream().map(CommentsResponseDto::from).collect(Collectors.toList());
         this.createdAt = memo.getCreatedAt();
         this.modifiedAt = memo.getModifiedAt();
     }
 
-    public static MemoResponseDto from(Memo memo){
+    public static MemoResponseDto from(Memo memo) {
         return new MemoResponseDto(memo);
     }
 }

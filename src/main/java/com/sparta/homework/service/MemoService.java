@@ -26,9 +26,9 @@ public class MemoService {
     @Transactional
     public MemoResponseDto createMemo(MemoRequestDto requestDto) {
 
-        Optional<User> user = userRepository.findByUsername(requestDto.getUsername());
+        User user = userRepository.findByUsername(requestDto.getUsername()).orElseThrow(()-> new IllegalArgumentException("메시지"));
 
-        Memo memo = memoRepository.saveAndFlush(new Memo(requestDto, user.get(), user.get().getUsername()));
+        Memo memo = memoRepository.saveAndFlush(new Memo(requestDto, user));
 
         return MemoResponseDto.from(memo);
     }
@@ -36,17 +36,16 @@ public class MemoService {
     @Transactional(readOnly = true)
     public List<MemoResponseDto> getMemos(String userName) {
         Optional<User> user = userRepository.findByUsername(userName);
-
-        List<Memo> memos;
-        memos = memoRepository.findAllByUserIdOrderByCreatedAtDesc(user.get().getId());
-
-        return memos.stream().map(MemoResponseDto::new).collect(Collectors.toList());
+        List<Memo> memos = memoRepository.findAllByUserIdOrderByCreatedAtDesc(user.get().getId());
+        return memos.stream().map(MemoResponseDto::from).collect(Collectors.toList());
+//        return memos.stream().map(MemoResponseDto::new).collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
     public List<MemoResponseDto> getMemosAdmin() {
         List<Memo> memos = memoRepository.findAll();
-        return memos.stream().map(MemoResponseDto::new).collect(Collectors.toList());
+        return memos.stream().map(MemoResponseDto::from).collect(Collectors.toList());
+//        return memos.stream().map(MemoResponseDto::new).collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
@@ -68,8 +67,8 @@ public class MemoService {
 
     @Transactional
     public String update(Long id, MemoRequestDto requestDto, String userName) {
-        Optional<User> user = userRepository.findByUsername(userName);
-        Memo memo = memoRepository.findByIdAndUserId(id, user.get().getId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "작성자만 수정할 수 있습니다."));
+        User user = userRepository.findByUsername(userName).orElseThrow(() -> new IllegalArgumentException("메시지"));
+        Memo memo = memoRepository.findByIdAndUserId(id, user.getId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "작성자만 수정할 수 있습니다."));
         memo.update(requestDto);
         return "수정 완료";
     }
@@ -83,13 +82,13 @@ public class MemoService {
 
     @Transactional
     public String deleteMemo(Long id, String userName) {
-        Optional<User> user = userRepository.findByUsername(userName);
+        User user = userRepository.findByUsername(userName).orElseThrow(() -> new IllegalArgumentException("메시지"));
 
-        Memo memo = memoRepository.findByIdAndUserId(id, user.get().getId()).orElseThrow(
+        Memo memo = memoRepository.findByIdAndUserId(id, user.getId()).orElseThrow(
                 () -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "작성자만 삭제할 수 있습니다.")
         );
 
-        memoRepository.deleteMemoByUserIdAndId(memo.getId(), user.get().getId());
+        memoRepository.deleteMemoByUserIdAndId(memo.getId(), user.getId());
 
         return "삭제완료";
     }
