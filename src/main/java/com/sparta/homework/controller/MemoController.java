@@ -17,10 +17,8 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 public class MemoController {
-
     private final MemoService memoService;
     private final CheckUtil checkUtil;
-
     @PostMapping("/api/memos")
     public MemoResponseDto createMemo(@RequestBody MemoRequestDto requestDto, HttpServletRequest request) {
         checkUtil.tokenChecker(request);
@@ -38,9 +36,8 @@ public class MemoController {
         UtilDto utilDto = checkUtil.tokenChecker(request);
         if (utilDto.getUserRoleEnum() == UserRoleEnum.USER) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "관리자만 사용 가능합니다");
-        } else {
-            return memoService.getMemosAdmin();
         }
+        return memoService.getMemosAdmin();
     }
 
     @GetMapping("/api/memos/{id}")
@@ -54,9 +51,8 @@ public class MemoController {
         UtilDto utilDto = checkUtil.tokenChecker(request);
         if (utilDto.getUserRoleEnum() == UserRoleEnum.USER) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "관리자만 사용 가능합니다");
-        } else {
-            return memoService.getCertainMemoAdmin(id);
         }
+        return memoService.getCertainMemoAdmin(id);
     }
 
     @PutMapping("/api/memos/{id}")
@@ -71,7 +67,7 @@ public class MemoController {
         if (utilDto.getUserRoleEnum() == UserRoleEnum.USER) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "관리자만 사용 가능합니다");
         }
-            return memoService.updateAdmin(id,requestDto);
+        return memoService.updateAdmin(id, requestDto);
     }
 
     @DeleteMapping("/api/memos/{id}")
@@ -85,8 +81,7 @@ public class MemoController {
         UtilDto utilDto = checkUtil.tokenChecker(request);
         if (utilDto.getUserRoleEnum() == UserRoleEnum.USER) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "관리자만 사용 가능합니다");
-        } else {
-            return memoService.deleteMemoAdmin(id);
         }
+        return memoService.deleteMemoAdmin(id);
     }
 }

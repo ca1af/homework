@@ -15,22 +15,18 @@ public class Memo extends Timestamped {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-
     @Column(nullable = false)
     private String title;
-
     @Column(nullable = false)
     private String contents;
-
     @ManyToOne
     @JoinColumn(name = "USER_ID", nullable = false)
     private User user;
-
     @Column
     private String userName;
-
     @OrderBy(value = "createdAt DESC")
-    @OneToMany(mappedBy = "memo", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "memo", cascade = CascadeType.PERSIST, orphanRemoval = true)
+//    cascade = CascadeType.PERSIST, + orphanRemoval = true 작동.
     List<Comments> comments = new ArrayList<>();
 
     public Memo(String title, String contents, User user, String userName) {

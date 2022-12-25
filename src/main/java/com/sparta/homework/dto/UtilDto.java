@@ -10,7 +10,6 @@ import java.util.Optional;
 public class UtilDto {
     String username;
     UserRoleEnum userRoleEnum;
-
     private UtilDto(User user){
         this.username = user.getUsername();
         this.userRoleEnum = user.getRole();

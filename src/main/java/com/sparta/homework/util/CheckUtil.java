@@ -31,7 +31,7 @@ public class CheckUtil {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "토큰 에러입니다");
             }
            User user = userRepository.findByUsername(claims.getSubject()).orElseThrow(() -> new IllegalArgumentException("유저없다"));
-            UserRoleEnum userRoleEnum = user.getRole();
+//            UserRoleEnum userRoleEnum = user.getRole();
 //            String auth1 = claims.get("auth", String.class);
             userRepository.findByUsername(claims.getSubject()).orElseThrow(
                     () -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "사용자가 존재하지 않습니다")

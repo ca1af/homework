@@ -29,8 +29,6 @@ public class Comments extends Timestamped{
         this.memo = memo;
         this.userName = userName;
     }
-
-
     public void update(CommentsRequestDto requestDto){
         this.comment = requestDto.getComment();
     }

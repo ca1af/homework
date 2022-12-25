@@ -27,16 +27,15 @@ public class MemoResponseDto extends Timestamped {
         this.userName = memo.getUserName();
         this.title = memo.getTitle();
         this.contents = memo.getContents();
-//        List<CommentsResponseDto> list1 = new ArrayList<>();
-//        for (Comments comments : memo.getComments()) {
-//            list1.add(CommentsResponseDto.from(comments));
-//        }
-//        this.commentList = list1;
-        this.commentList = memo.getComments().stream().map(CommentsResponseDto::from).collect(Collectors.toList());
+        List<CommentsResponseDto> list1 = new ArrayList<>();
+        for (Comments comments : memo.getComments()) {
+            commentList.add(CommentsResponseDto.from(comments));
+        }
+        this.commentList = list1;
+//        this.commentList = memo.getComments().stream().map(CommentsResponseDto::from).collect(Collectors.toList());
         this.createdAt = memo.getCreatedAt();
         this.modifiedAt = memo.getModifiedAt();
     }
-
     public static MemoResponseDto from(Memo memo) {
         return new MemoResponseDto(memo);
     }

@@ -39,9 +39,8 @@ public class CommentsController {
         UtilDto utilDto = checkUtil.tokenChecker(request);
         if (utilDto.getUserRoleEnum() == UserRoleEnum.USER) {
             throw new IllegalArgumentException("이것은 메시지다.");
-        } else {
-            return commentsService.updateCommentAdmin(requestDto, id);
         }
+            return commentsService.updateCommentAdmin(requestDto, id);
     }
 
     @DeleteMapping("/comments/{id}")
@@ -55,8 +54,7 @@ public class CommentsController {
         UtilDto utilDto = checkUtil.tokenChecker(request);
         if (utilDto.getUserRoleEnum() == UserRoleEnum.USER) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "관리자만 사용 가능합니다");
-        } else {
-            return commentsService.deleteCommentAdmin(id, utilDto.getUsername());
         }
+            return commentsService.deleteCommentAdmin(id, utilDto.getUsername());
     }
 }
