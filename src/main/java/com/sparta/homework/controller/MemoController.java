@@ -8,6 +8,7 @@ import com.sparta.homework.service.MemoService;
 import com.sparta.homework.util.CheckUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -22,6 +23,7 @@ public class MemoController {
     @PostMapping("/api/memos")
     public MemoResponseDto createMemo(@RequestBody MemoRequestDto requestDto, HttpServletRequest request) {
         checkUtil.tokenChecker(request);
+
         return memoService.createMemo(requestDto);
     }
 
@@ -32,11 +34,13 @@ public class MemoController {
     }
 
     @GetMapping("/api/admin/memos")
-    public List<MemoResponseDto> getMemosAdmin(HttpServletRequest request) {
-        UtilDto utilDto = checkUtil.tokenChecker(request);
-        if (utilDto.getUserRoleEnum() == UserRoleEnum.USER) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "관리자만 사용 가능합니다");
-        }
+    @PreAuthorize("hasRole('ADMIN')")
+    public List<MemoResponseDto> getMemosAdmin() {
+        //HttpServletRequest request 패러미터
+//        UtilDto utilDto = checkUtil.tokenChecker(request);
+//        if (utilDto.getUserRoleEnum() == UserRoleEnum.USER) {
+//            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "관리자만 사용 가능합니다");
+//        }
         return memoService.getMemosAdmin();
     }
 
@@ -47,11 +51,13 @@ public class MemoController {
     }
 
     @GetMapping("/api/admin/memos/{id}")
-    public MemoResponseDto getCertainMemosAdmin(@PathVariable Long id, HttpServletRequest request) {
-        UtilDto utilDto = checkUtil.tokenChecker(request);
-        if (utilDto.getUserRoleEnum() == UserRoleEnum.USER) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "관리자만 사용 가능합니다");
-        }
+    @PreAuthorize("hasRole('ADMIN')")
+    public MemoResponseDto getCertainMemosAdmin(@PathVariable Long id) {
+//        HttpServletRequest request <- 패러미터
+//        UtilDto utilDto = checkUtil.tokenChecker(request);
+//        if (utilDto.getUserRoleEnum() == UserRoleEnum.USER) {
+//            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "관리자만 사용 가능합니다");
+//        }
         return memoService.getCertainMemoAdmin(id);
     }
 
@@ -62,11 +68,13 @@ public class MemoController {
     }
 
     @PutMapping("/api/admin/memos/{id}")
-    public String updateMemoAdmin(@PathVariable Long id, @RequestBody MemoRequestDto requestDto, HttpServletRequest request) {
-        UtilDto utilDto = checkUtil.tokenChecker(request);
-        if (utilDto.getUserRoleEnum() == UserRoleEnum.USER) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "관리자만 사용 가능합니다");
-        }
+    @PreAuthorize("hasRole('ADMIN')")
+    public String updateMemoAdmin(@PathVariable Long id, @RequestBody MemoRequestDto requestDto) {
+        //HttpServletRequest request 패러미터
+//        UtilDto utilDto = checkUtil.tokenChecker(request);
+//        if (utilDto.getUserRoleEnum() == UserRoleEnum.USER) {
+//            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "관리자만 사용 가능합니다");
+//        }
         return memoService.updateAdmin(id, requestDto);
     }
 
@@ -77,11 +85,13 @@ public class MemoController {
     }
 
     @DeleteMapping("/api/admin/memos/{id}")
-    public String deleteMemoAdmin(@PathVariable Long id, HttpServletRequest request) {
-        UtilDto utilDto = checkUtil.tokenChecker(request);
-        if (utilDto.getUserRoleEnum() == UserRoleEnum.USER) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "관리자만 사용 가능합니다");
-        }
+    @PreAuthorize("hasRole('ADMIN')")
+    public String deleteMemoAdmin(@PathVariable Long id) {
+        // HttpServletRequest request 패러미터
+//        UtilDto utilDto = checkUtil.tokenChecker(request);
+//        if (utilDto.getUserRoleEnum() == UserRoleEnum.USER) {
+//            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "관리자만 사용 가능합니다");
+//        }
         return memoService.deleteMemoAdmin(id);
     }
 }

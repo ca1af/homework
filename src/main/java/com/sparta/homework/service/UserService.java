@@ -8,6 +8,8 @@ import com.sparta.homework.jwt.JwtUtil;
 import com.sparta.homework.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
@@ -60,5 +62,10 @@ public class UserService {
             throw  new ResponseStatusException(HttpStatus.BAD_REQUEST, "비밀번호가 틀렸습니다");
         }
         return jwtUtil.createToken(user.getUsername(), user.getRole());
+    }
+
+    @Transactional(readOnly = true)
+    public String longin2(@AuthenticationPrincipal UserDetails userDetails){
+        return "OK";
     }
 }

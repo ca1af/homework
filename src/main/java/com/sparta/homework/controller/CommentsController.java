@@ -8,6 +8,7 @@ import com.sparta.homework.service.CommentsService;
 import com.sparta.homework.util.CheckUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -35,11 +36,14 @@ public class CommentsController {
     //User반환하지 말구 인증 reponse(검증통과된 유저네임이과 유저롤). <- return을 이것으로 해보자//
 
     @PutMapping("/admin/comments/{id}")
-    public String updateCommentAdmin(@PathVariable Long id, @RequestBody CommentsRequestDto requestDto, HttpServletRequest request) {
-        UtilDto utilDto = checkUtil.tokenChecker(request);
-        if (utilDto.getUserRoleEnum() == UserRoleEnum.USER) {
-            throw new IllegalArgumentException("이것은 메시지다.");
-        }
+    @PreAuthorize("hasRole('ADMIN')")
+    public String updateCommentAdmin(@PathVariable Long id, @RequestBody CommentsRequestDto requestDto) {
+//        HttpServletRequest request 패러미터로 넣던 것.
+//        UtilDto utilDto = checkUtil.tokenChecker(request);
+//        if (utilDto.getUserRoleEnum() == UserRoleEnum.USER) {
+//            throw new IllegalArgumentException("이것은 메시지다.");
+//        }
+        //위 놈들을 다 빼봐도 토큰에러 혹은 어드민이 아닐 시 리젝되는 것 모두 잘 수행된다. 심지어 로그까지 잘 찍힌다.
             return commentsService.updateCommentAdmin(requestDto, id);
     }
 
@@ -50,11 +54,9 @@ public class CommentsController {
     }
 
     @DeleteMapping("/admin/comments/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public String deleteCommentAdmin(@PathVariable Long id, HttpServletRequest request) {
         UtilDto utilDto = checkUtil.tokenChecker(request);
-        if (utilDto.getUserRoleEnum() == UserRoleEnum.USER) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "관리자만 사용 가능합니다");
-        }
             return commentsService.deleteCommentAdmin(id, utilDto.getUsername());
     }
 }

@@ -7,8 +7,11 @@ import com.sparta.homework.entity.User;
 import com.sparta.homework.entity.UserRoleEnum;
 import com.sparta.homework.repository.MemoRepository;
 import com.sparta.homework.repository.UserRepository;
+import com.sparta.homework.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
@@ -22,11 +25,13 @@ import java.util.stream.Collectors;
 public class MemoService {
     private final MemoRepository memoRepository;
     private final UserRepository userRepository;
+    private final UserDetailsImpl userDetails;
 
     @Transactional
     public MemoResponseDto createMemo(MemoRequestDto requestDto) {
 
-        User user = userRepository.findByUsername(requestDto.getUsername()).orElseThrow(()-> new IllegalArgumentException("메시지"));
+        User user = userRepository.findByUsername(requestDto.getUsername()).orElseThrow(
+                ()-> new IllegalArgumentException("유저이름이 일치하지 않습니다"));
 
         Memo memo = memoRepository.saveAndFlush(new Memo(requestDto, user));
 
@@ -67,7 +72,7 @@ public class MemoService {
 
     @Transactional
     public String update(Long id, MemoRequestDto requestDto, String userName) {
-        User user = userRepository.findByUsername(userName).orElseThrow(() -> new IllegalArgumentException("메시지"));
+        User user = userRepository.findByUsername(userName).orElseThrow(() -> new IllegalArgumentException("유저 없음"));
         Memo memo = memoRepository.findByIdAndUserId(id, user.getId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "작성자만 수정할 수 있습니다."));
         memo.update(requestDto);
         return "수정 완료";

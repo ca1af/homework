@@ -23,6 +23,7 @@ public class Comments extends Timestamped{
     // JsonIgnore는 comments에서 memo를 무시하라는 어노테이션. (Json 만들 때)
     private Memo memo;
     //comments -> memo -> getComments -> emmo...~ 오류 200줄
+    //테이블 A의 아이디를 테이블 B가 참조해야하니까.
 
     public Comments(CommentsRequestDto requestDto, Memo memo, String userName){
         this.comment = requestDto.getComment();
