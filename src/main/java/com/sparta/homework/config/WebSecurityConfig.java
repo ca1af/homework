@@ -53,7 +53,7 @@ public class WebSecurityConfig {
 
         httpSecurity.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         //세션 무상태성 선언이 왜필요하지? JWT 쓰잖아... 그냥 디폴트로 해놓는건가?
-        //
+        //세션 안쓰니까 STESELESS 쓴거임.
 
         httpSecurity.authorizeRequests().antMatchers("/api/user/**").permitAll()
                 .anyRequest().authenticated()

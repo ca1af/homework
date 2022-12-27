@@ -2,96 +2,66 @@ package com.sparta.homework.controller;
 
 import com.sparta.homework.dto.MemoRequestDto;
 import com.sparta.homework.dto.MemoResponseDto;
-import com.sparta.homework.dto.UtilDto;
-import com.sparta.homework.entity.UserRoleEnum;
+import com.sparta.homework.security.UserDetailsImpl;
 import com.sparta.homework.service.MemoService;
-import com.sparta.homework.util.CheckUtil;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
 public class MemoController {
     private final MemoService memoService;
-    private final CheckUtil checkUtil;
-    @PostMapping("/api/memos")
-    public MemoResponseDto createMemo(@RequestBody MemoRequestDto requestDto, HttpServletRequest request) {
-        checkUtil.tokenChecker(request);
 
+    @PostMapping("/api/memos")
+    public MemoResponseDto createMemo(@RequestBody MemoRequestDto requestDto) {
         return memoService.createMemo(requestDto);
     }
 
     @GetMapping("/api/memos")
-    public List<MemoResponseDto> getMemos(HttpServletRequest request) {
-        UtilDto utilDto = checkUtil.tokenChecker(request);
-        return memoService.getMemos(utilDto.getUsername());
+    public List<MemoResponseDto> getMemos(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return memoService.getMemos(userDetails.getUsername());
     }
 
     @GetMapping("/api/admin/memos")
     @PreAuthorize("hasRole('ADMIN')")
     public List<MemoResponseDto> getMemosAdmin() {
-        //HttpServletRequest request 패러미터
-//        UtilDto utilDto = checkUtil.tokenChecker(request);
-//        if (utilDto.getUserRoleEnum() == UserRoleEnum.USER) {
-//            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "관리자만 사용 가능합니다");
-//        }
         return memoService.getMemosAdmin();
     }
 
     @GetMapping("/api/memos/{id}")
-    public MemoResponseDto getCertainMemos(@PathVariable Long id, HttpServletRequest request) {
-        UtilDto utilDto = checkUtil.tokenChecker(request);
-        return memoService.getCertainMemo(id, utilDto.getUsername());
+    public MemoResponseDto getCertainMemos(@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return memoService.getCertainMemo(id, userDetails.getUsername());
     }
 
     @GetMapping("/api/admin/memos/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public MemoResponseDto getCertainMemosAdmin(@PathVariable Long id) {
-//        HttpServletRequest request <- 패러미터
-//        UtilDto utilDto = checkUtil.tokenChecker(request);
-//        if (utilDto.getUserRoleEnum() == UserRoleEnum.USER) {
-//            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "관리자만 사용 가능합니다");
-//        }
         return memoService.getCertainMemoAdmin(id);
     }
 
     @PutMapping("/api/memos/{id}")
-    public String updateMemo(@PathVariable Long id, @RequestBody MemoRequestDto requestDto, HttpServletRequest request) {
-        UtilDto utilDto = checkUtil.tokenChecker(request);
-        return memoService.update(id, requestDto, utilDto.getUsername());
+    public String updateMemo(@PathVariable Long id, @RequestBody MemoRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return memoService.update(id, requestDto, userDetails.getUsername());
     }
 
     @PutMapping("/api/admin/memos/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public String updateMemoAdmin(@PathVariable Long id, @RequestBody MemoRequestDto requestDto) {
-        //HttpServletRequest request 패러미터
-//        UtilDto utilDto = checkUtil.tokenChecker(request);
-//        if (utilDto.getUserRoleEnum() == UserRoleEnum.USER) {
-//            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "관리자만 사용 가능합니다");
-//        }
         return memoService.updateAdmin(id, requestDto);
     }
 
     @DeleteMapping("/api/memos/{id}")
-    public String deleteMemo(@PathVariable Long id, HttpServletRequest request) {
-        UtilDto utilDto = checkUtil.tokenChecker(request);
-        return memoService.deleteMemo(id, utilDto.getUsername());
+    public String deleteMemo(@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return memoService.deleteMemo(id, userDetails.getUsername());
     }
 
     @DeleteMapping("/api/admin/memos/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public String deleteMemoAdmin(@PathVariable Long id) {
-        // HttpServletRequest request 패러미터
-//        UtilDto utilDto = checkUtil.tokenChecker(request);
-//        if (utilDto.getUserRoleEnum() == UserRoleEnum.USER) {
-//            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "관리자만 사용 가능합니다");
-//        }
         return memoService.deleteMemoAdmin(id);
     }
 }

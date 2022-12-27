@@ -25,7 +25,6 @@ import java.util.stream.Collectors;
 public class MemoService {
     private final MemoRepository memoRepository;
     private final UserRepository userRepository;
-    private final UserDetailsImpl userDetails;
 
     @Transactional
     public MemoResponseDto createMemo(MemoRequestDto requestDto) {

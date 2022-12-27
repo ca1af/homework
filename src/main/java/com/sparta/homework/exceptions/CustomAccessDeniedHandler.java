@@ -22,6 +22,7 @@ public class CustomAccessDeniedHandler implements AccessDeniedHandler {
             response.getWriter().write(json);
         } catch (Exception e) {
             log.error(e.getMessage());
+            throw new AccessDeniedException("실험1");
         }
     }
 }

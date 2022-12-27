@@ -3,8 +3,10 @@ package com.sparta.homework.controller;
 import com.sparta.homework.dto.LoginRequestDto;
 import com.sparta.homework.dto.SignupRequestDto;
 import com.sparta.homework.jwt.JwtUtil;
+import com.sparta.homework.security.UserDetailsImpl;
 import com.sparta.homework.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,14 +20,9 @@ import javax.servlet.http.HttpServletResponse;
 public class UserController {
     private final UserService userService;
 
-
-    //    @ResponseBody
     @PostMapping("/signup")
     public String signup(@RequestBody SignupRequestDto signupRequestDto) {
         userService.signup(signupRequestDto);
-        // rolechecker ~
-        //if (role == user) 1번매서드.~
-        //else 2번 매서드.~
         if (signupRequestDto.isAdmin()) {
             return "ADMIN";
         } else {
@@ -33,7 +30,6 @@ public class UserController {
         }
     }
 
-    //    @ResponseBody
     @PostMapping("/login")
     public String login(@RequestBody LoginRequestDto loginRequestDto, HttpServletResponse response) {
         String generatedToken = userService.login(loginRequestDto);
