@@ -63,9 +63,4 @@ public class UserService {
         }
         return jwtUtil.createToken(user.getUsername(), user.getRole());
     }
-
-    @Transactional(readOnly = true)
-    public String longin2(@AuthenticationPrincipal UserDetails userDetails){
-        return "OK";
-    }
 }
