@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 
 @RequiredArgsConstructor
 @RestController
@@ -21,7 +22,7 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping("/signup")
-    public String signup(@RequestBody SignupRequestDto signupRequestDto) {
+    public String signup(@RequestBody @Valid SignupRequestDto signupRequestDto) {
         userService.signup(signupRequestDto);
         if (signupRequestDto.isAdmin()) {
             return "ADMIN";
@@ -31,7 +32,7 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public String login(@RequestBody LoginRequestDto loginRequestDto, HttpServletResponse response) {
+    public String login(final @RequestBody LoginRequestDto loginRequestDto, HttpServletResponse response) {
         String generatedToken = userService.login(loginRequestDto);
         response.addHeader(JwtUtil.AUTHORIZATION_HEADER, generatedToken);
         return "success";

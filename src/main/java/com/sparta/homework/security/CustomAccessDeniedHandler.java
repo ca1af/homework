@@ -1,4 +1,4 @@
-package com.sparta.homework.exceptions;
+package com.sparta.homework.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sparta.homework.dto.SecurityExceptionDto;

@@ -9,6 +9,7 @@ import com.sparta.homework.entity.UserRoleEnum;
 import com.sparta.homework.repository.CommentsRepository;
 import com.sparta.homework.repository.MemoRepository;
 import com.sparta.homework.repository.UserRepository;
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;

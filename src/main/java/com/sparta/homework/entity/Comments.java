@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @NoArgsConstructor
@@ -24,6 +26,9 @@ public class Comments extends Timestamped{
     private Memo memo;
     //comments -> memo -> getComments -> emmo...~ 오류 200줄
     //테이블 A의 아이디를 테이블 B가 참조해야하니까.
+
+    @OneToMany(mappedBy = "memo", cascade = CascadeType.PERSIST, orphanRemoval = true)
+    List<Likes> lIkesList = new ArrayList<>();
 
     public Comments(CommentsRequestDto requestDto, Memo memo, String userName){
         this.comment = requestDto.getComment();
