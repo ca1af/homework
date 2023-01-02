@@ -20,6 +20,7 @@ public class Comments extends Timestamped{
     private String userName;
     @Column
     private String comment;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "MEMO_ID", nullable = false)
     // JsonIgnore는 comments에서 memo를 무시하라는 어노테이션. (Json 만들 때)
@@ -27,8 +28,8 @@ public class Comments extends Timestamped{
     //comments -> memo -> getComments -> emmo...~ 오류 200줄
     //테이블 A의 아이디를 테이블 B가 참조해야하니까.
 
-    @OneToMany(mappedBy = "memo", cascade = CascadeType.PERSIST, orphanRemoval = true)
-    List<Likes> lIkesList = new ArrayList<>();
+    @OneToMany(mappedBy = "comments", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    List<Likes> likes = new ArrayList<>();
 
     public Comments(CommentsRequestDto requestDto, Memo memo, String userName){
         this.comment = requestDto.getComment();

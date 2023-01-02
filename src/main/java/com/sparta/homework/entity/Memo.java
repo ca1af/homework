@@ -29,6 +29,9 @@ public class Memo extends Timestamped {
 //    cascade = CascadeType.PERSIST, + orphanRemoval = true 작동.
     List<Comments> comments = new ArrayList<>();
 
+//    @OneToMany(mappedBy = "memo", cascade = CascadeType.PERSIST, orphanRemoval = true)
+//    private List<Likes> likes;
+
     public Memo(String title, String contents, User user, String userName) {
         this.contents = contents;
         this.title = title;
