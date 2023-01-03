@@ -1,28 +1,20 @@
 package com.sparta.homework.service;
 
-import com.sparta.homework.dto.CommentsRequestDto;
-import com.sparta.homework.dto.MemoRequestDto;
-import com.sparta.homework.entity.Comments;
-import com.sparta.homework.entity.Memo;
-import com.sparta.homework.entity.User;
-import com.sparta.homework.entity.UserRoleEnum;
-import com.sparta.homework.repository.LikesRepository;
+import com.sparta.homework.repository.LikesCommentRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 @Component
-class LikesServiceTest {
+class LikesCommentServiceTest {
     @Autowired
     private final LikesService likesService;
     @Autowired
-    private final LikesRepository likesRepository;
+    private final LikesCommentRepository likesCommentRepository;
 
-    LikesServiceTest(LikesService likesService, LikesRepository likesRepository) {
+    LikesCommentServiceTest(LikesService likesService, LikesCommentRepository likesCommentRepository) {
         this.likesService = likesService;
-        this.likesRepository = likesRepository;
+        this.likesCommentRepository = likesCommentRepository;
     }
 
     @Test
@@ -37,6 +29,6 @@ class LikesServiceTest {
 //        likesService.likeComment(comments.getId());
 
         //then
-//        assertNotNull(likesRepository.findByUserId(comments.getId()));
+//        assertNotNull(likesCommentRepository.findByUserId(comments.getId()));
     }
 }

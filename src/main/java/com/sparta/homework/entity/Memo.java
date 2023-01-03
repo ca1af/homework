@@ -25,12 +25,12 @@ public class Memo extends Timestamped {
     @Column
     private String userName;
     @OrderBy(value = "createdAt DESC")
-    @OneToMany(mappedBy = "memo", cascade = CascadeType.PERSIST, orphanRemoval = true)
+    @OneToMany(mappedBy = "memo", cascade = CascadeType.REMOVE, orphanRemoval = true)
 //    cascade = CascadeType.PERSIST, + orphanRemoval = true 작동.
     List<Comments> comments = new ArrayList<>();
 
-//    @OneToMany(mappedBy = "memo", cascade = CascadeType.PERSIST, orphanRemoval = true)
-//    private List<Likes> likes;
+    @OneToMany(mappedBy = "memo", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    List<LikesMemo> likes = new ArrayList<>();
 
     public Memo(String title, String contents, User user, String userName) {
         this.contents = contents;

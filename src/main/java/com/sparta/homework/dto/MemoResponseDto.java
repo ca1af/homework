@@ -18,6 +18,7 @@ public class MemoResponseDto extends Timestamped {
     private String userName;
     private String title;
     private String contents;
+    private int likes;
     private List<CommentsResponseDto> commentList;
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
@@ -27,6 +28,11 @@ public class MemoResponseDto extends Timestamped {
         this.userName = memo.getUserName();
         this.title = memo.getTitle();
         this.contents = memo.getContents();
+        if (memo.getLikes().size() == 0){
+            this.likes = 0;
+        } else {
+            this.likes = memo.getLikes().size() -1;
+        }
         this.commentList = memo.getComments().stream().map(CommentsResponseDto::from).collect(Collectors.toList());
         this.createdAt = memo.getCreatedAt();
         this.modifiedAt = memo.getModifiedAt();

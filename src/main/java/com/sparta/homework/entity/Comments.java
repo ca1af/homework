@@ -1,6 +1,5 @@
 package com.sparta.homework.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sparta.homework.dto.CommentsRequestDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -29,7 +28,7 @@ public class Comments extends Timestamped{
     //테이블 A의 아이디를 테이블 B가 참조해야하니까.
 
     @OneToMany(mappedBy = "comments", cascade = CascadeType.REMOVE, orphanRemoval = true)
-    List<Likes> likes = new ArrayList<>();
+    List<LikesComment> likes = new ArrayList<>();
 
     public Comments(CommentsRequestDto requestDto, Memo memo, String userName){
         this.comment = requestDto.getComment();

@@ -1,6 +1,7 @@
 package com.sparta.homework.controller;
 
 import com.sparta.homework.dto.CommentsResponseDto;
+import com.sparta.homework.dto.MemoResponseDto;
 import com.sparta.homework.security.UserDetailsImpl;
 import com.sparta.homework.service.LikesService;
 import lombok.RequiredArgsConstructor;
@@ -12,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/memos")
+@RequestMapping("/api/likes")
 public class LikesController {
     private final LikesService likesService;
 
@@ -22,8 +23,13 @@ public class LikesController {
         return likesService.likeComment(id,userDetails.getUser());
     }
 
-    @PostMapping("/comments/delete/{id}")
-    public CommentsResponseDto deleteCommentLikes(@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl userDetails){
-        return likesService.deleteCommentLikes(id,userDetails.getUser());
+    @PostMapping("/memos/{id}")
+    public MemoResponseDto likeMemo(@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl userDetails){
+        return likesService.likeMemo(id,userDetails.getUser());
     }
+
+//    @PostMapping("/comments/delete/{id}")
+//    public CommentsResponseDto deleteCommentLikes(@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl userDetails){
+//        return likesService.deleteCommentLikes(id,userDetails.getUser());
+//    }
 }

@@ -53,7 +53,7 @@ public class MemoService {
         Optional<User> user = userRepository.findByUsername(userName);
 
         Memo memo = memoRepository.findByIdAndUserId(id, user.get().getId())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "작성자만 조회할 수 있습니다."));
+                .orElseThrow(() -> new IllegalArgumentException("작성자만 조회할 수 있습니다."));
 
         return MemoResponseDto.from(memo);
     }
@@ -61,21 +61,21 @@ public class MemoService {
     @Transactional(readOnly = true)
     public MemoResponseDto getCertainMemoAdmin(Long id) {
         Memo memo = memoRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "ADMIN - 해당 메모 없음"));
+                .orElseThrow(() -> new IllegalArgumentException("ADMIN - 해당 메모 없음"));
         return MemoResponseDto.from(memo);
     }
 
     @Transactional
     public String update(Long id, MemoRequestDto requestDto, String userName) {
         User user = userRepository.findByUsername(userName).orElseThrow(() -> new IllegalArgumentException("유저 없음"));
-        Memo memo = memoRepository.findByIdAndUserId(id, user.getId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "작성자만 수정할 수 있습니다."));
+        Memo memo = memoRepository.findByIdAndUserId(id, user.getId()).orElseThrow(() -> new IllegalArgumentException("작성자만 수정할 수 있습니다."));
         memo.update(requestDto);
         return "수정 완료";
     }
 
     @Transactional
     public String updateAdmin(Long id, MemoRequestDto requestDto) {
-        Memo memo = memoRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "ADMIN - 메모가 존재하지 않습니다."));
+        Memo memo = memoRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("ADMIN - 메모가 존재하지 않습니다."));
         memo.update(requestDto);
         return "수정완료";
     }
@@ -85,7 +85,7 @@ public class MemoService {
         User user = userRepository.findByUsername(userName).orElseThrow(() -> new IllegalArgumentException("메시지"));
 
         Memo memo = memoRepository.findByIdAndUserId(id, user.getId()).orElseThrow(
-                () -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "작성자만 삭제할 수 있습니다.")
+                () -> new IllegalArgumentException("작성자만 삭제할 수 있습니다.")
         );
 
         memoRepository.deleteMemoByUserIdAndId(memo.getId(), user.getId());
@@ -97,7 +97,7 @@ public class MemoService {
     @Transactional
     public String deleteMemoAdmin(Long id) {
         Memo memo = memoRepository.findById(id).orElseThrow(
-                () -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "ADMIN - 메모가 존재하지 않습니다.")
+                () -> new IllegalArgumentException("ADMIN - 메모가 존재하지 않습니다.")
         );
         memoRepository.deleteMemoById(memo.getId());
         return "삭제완료";

@@ -1,4 +1,4 @@
-package com.sparta.homework.security;
+package com.sparta.homework.exceptions;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sparta.homework.dto.SecurityExceptionDto;
@@ -16,7 +16,7 @@ public class CustomAuthenticationFailureHandler implements AuthenticationFailure
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
         response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         response.setContentType("application/json");
-        String json = new ObjectMapper().writeValueAsString(new SecurityExceptionDto(response.getStatus(), "Sign up failed"));
+        String json = new ObjectMapper().writeValueAsString(new SecurityExceptionDto(response.getStatus(), "Login failed"));
         response.getWriter().write(json);
     }
 }

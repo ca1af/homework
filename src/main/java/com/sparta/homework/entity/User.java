@@ -29,7 +29,7 @@ public class User {
     List<Memo> memos = new ArrayList<>();
 
 //    @OneToMany
-//    List<Likes> likes = new ArrayList<>();
+//    List<LikesComment> likes = new ArrayList<>();
 
     public User(String username, String password, UserRoleEnum role) {
         this.username = username;

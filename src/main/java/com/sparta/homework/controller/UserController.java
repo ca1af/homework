@@ -37,4 +37,11 @@ public class UserController {
         response.addHeader(JwtUtil.AUTHORIZATION_HEADER, generatedToken);
         return "success";
     }
+
+    @PostMapping("/login/success")
+    public String loginSuccess(final @RequestBody LoginRequestDto loginRequestDto, HttpServletResponse response) {
+        String generatedToken = userService.login(loginRequestDto);
+        response.addHeader(JwtUtil.AUTHORIZATION_HEADER, generatedToken);
+        return "success";
+    }
 }

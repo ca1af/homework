@@ -1,4 +1,4 @@
-package com.sparta.homework.security;
+package com.sparta.homework.exceptions;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sparta.homework.dto.SecurityExceptionDto;
@@ -29,6 +29,7 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
         response.setContentType("application/json");
         String json = new ObjectMapper().writeValueAsString(new SecurityExceptionDto(response.getStatus(), "Signed up successfully"));
         response.getWriter().write(json);
+        response.sendRedirect("/api/user/login/success");
     }
 
 //            response.setStatus(HttpStatus.BAD_REQUEST.value());

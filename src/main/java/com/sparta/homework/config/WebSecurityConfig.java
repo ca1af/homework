@@ -1,10 +1,10 @@
 package com.sparta.homework.config;
 
-import com.sparta.homework.security.CustomAccessDeniedHandler;
+import com.sparta.homework.exceptions.CustomAccessDeniedHandler;
 import com.sparta.homework.jwt.JwtAuthFilter;
 import com.sparta.homework.jwt.JwtUtil;
-import com.sparta.homework.security.CustomAuthenticationFailureHandler;
-import com.sparta.homework.security.CustomAuthenticationSuccessHandler;
+import com.sparta.homework.exceptions.CustomAuthenticationFailureHandler;
+import com.sparta.homework.exceptions.CustomAuthenticationSuccessHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
@@ -22,7 +22,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 @RequiredArgsConstructor
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true) // preAuthorize 허용부분
+@EnableGlobalMethodSecurity(prePostEnabled = true) // preAuthorize 허용부분
 public class WebSecurityConfig {
     private final JwtUtil jwtUtil;
     private final CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler;
@@ -58,7 +58,7 @@ public class WebSecurityConfig {
 
         httpSecurity
                 .formLogin()
-//                .loginProcessingUrl("/api/user/login")
+                .loginProcessingUrl("/api/user/login")
 //                .usernameParameter("username")
 //                .passwordParameter("password")
                 .successHandler(customAuthenticationSuccessHandler)

@@ -34,14 +34,14 @@ public class UserService {
         // 회원 중복 확인
         Optional<User> found = userRepository.findByUsername(username);
         if (found.isPresent()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "중복된 username입니다");
+            throw new IllegalArgumentException("중복된 username 입니다");
         }
 
         UserRoleEnum role = UserRoleEnum.USER;
 
         if (signupRequestDto.isAdmin()) {
             if (!signupRequestDto.getAdminToken().equals(ADMIN_TOKEN)) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "관리자 암호가 틀려 등록이 불가능합니다.");
+                throw new IllegalArgumentException("관리자 암호가 틀려 등록이 불가능합니다.");
             }
             role = UserRoleEnum.ADMIN;
         }
@@ -57,11 +57,11 @@ public class UserService {
 
         // 사용자 확인
         User user = userRepository.findByUsername(username).orElseThrow(
-                () -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "회원 아이디가 없습니다")
+                () -> new IllegalArgumentException("회원 아이디가 없습니다")
         );
         // 비밀번호 확인
         if(!passwordEncoder.matches(password, user.getPassword())){
-            throw  new ResponseStatusException(HttpStatus.BAD_REQUEST, "비밀번호가 틀렸습니다");
+            throw  new IllegalArgumentException("비밀번호가 틀렸습니다");
         }
         return jwtUtil.createToken(user.getUsername(), user.getRole());
     }
