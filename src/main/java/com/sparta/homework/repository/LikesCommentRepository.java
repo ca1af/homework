@@ -10,4 +10,5 @@ public interface LikesCommentRepository extends JpaRepository<LikesComment, Long
     Optional<LikesComment> findByUserId(Long id);
     Optional<LikesComment> deleteByUserId(Long id);
     int countLikesCommentByUserId(Long id);
+    int countLikesCommentByCommentsId(Long id);
 }

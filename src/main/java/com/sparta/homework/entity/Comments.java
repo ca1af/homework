@@ -18,7 +18,7 @@ public class Comments extends Timestamped{
     @Column
     private String comment;
     private int likes;
-    public void setLikesCount(int likes) {
+    public void setLikesCountComment(int likes) {
         this.likes = likes;
     }
 

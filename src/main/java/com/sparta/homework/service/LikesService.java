@@ -43,7 +43,7 @@ public class LikesService {
         // likeRepository 에 이미 같은 사용자! 가 좋아요 한 것이 있다면 제거해야 해.
         if (likesCommentRepository.countLikesCommentByUserId(user.getId()) == 0) {
             likesCommentRepository.saveAndFlush(new LikesComment(comments, user));
-            comments.setLikesCount(likesCommentRepository.countLikesCommentByUserId(user.getId()));
+            comments.setLikesCountComment(likesCommentRepository.countLikesCommentByCommentsId(user.getId()));
         }
 
         return CommentsResponseDto.from(comments);
@@ -54,7 +54,7 @@ public class LikesService {
         Comments comments = commentsRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("해당 코멘트가 없습니다"));
         if (likesCommentRepository.countLikesCommentByUserId(user.getId()) != 0) {
             likesCommentRepository.deleteByUserId(user.getId());
-            comments.setLikesCount(likesCommentRepository.countLikesCommentByUserId(user.getId()));
+            comments.setLikesCountComment(likesCommentRepository.countLikesCommentByCommentsId(user.getId()));
         }
         return CommentsResponseDto.from(comments);
     }
