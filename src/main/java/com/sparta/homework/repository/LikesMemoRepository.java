@@ -7,7 +7,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.Optional;
 
 public interface LikesMemoRepository extends JpaRepository<LikesMemo, Long> {
-    Optional<LikesMemo> deleteByUserId(Long id);
-    int countLikesMemoByUserId(Long id);
+
+    Optional<LikesMemo> deleteByUserIdAndMemoId(Long userId, Long memoId);
+    int countLikesMemoByUserIdAndMemoId(Long userId, Long memoId);
     int countLikesMemoByMemoId(Long id);
 }
