@@ -43,7 +43,7 @@ public class LikesService {
         // likeRepository 에 이미 같은 사용자! 가 좋아요 한 것이 있다면 제거해야 해.
         if (likesCommentRepository.countLikesCommentByUserIdAndCommentsId(user.getId(), comments.getId()) == 0) {
             likesCommentRepository.saveAndFlush(new LikesComment(comments, user));
-            comments.setLikesCountComment(likesCommentRepository.countLikesCommentByCommentsId(user.getId()));
+            comments.setLikesCountComment(likesCommentRepository.countLikesCommentByCommentsId(comments.getId()));
         }
 
         return CommentsResponseDto.from(comments);
