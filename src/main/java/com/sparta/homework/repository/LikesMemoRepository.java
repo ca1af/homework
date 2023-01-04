@@ -9,4 +9,6 @@ import java.util.Optional;
 public interface LikesMemoRepository extends JpaRepository<LikesMemo, Long> {
     Optional<LikesMemo> findByUserId(Long id);
     Optional<LikesMemo> deleteByUserId(Long id);
+    int countLikesMemoByUserId(Long id);
+    int countLikesMemoByMemoId(Long id);
 }

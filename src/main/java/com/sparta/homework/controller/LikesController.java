@@ -23,10 +23,23 @@ public class LikesController {
         return likesService.likeComment(id,userDetails.getUser());
     }
 
+    @PostMapping("/delete/comments/{id}")
+    public CommentsResponseDto deleteLikeComment(@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl userDetails){
+        //userDetails로 요청받은 유저가 이미 likeService...?
+        return likesService.deleteLikeComment(id,userDetails.getUser());
+    }
+
     @PostMapping("/memos/{id}")
     public MemoResponseDto likeMemo(@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl userDetails){
         return likesService.likeMemo(id,userDetails.getUser());
     }
+
+    @PostMapping("/delete/memos/{id}")
+    public MemoResponseDto deleteLikeMemo(@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl userDetails){
+        return likesService.deleteLikeMemo(id,userDetails.getUser());
+    }
+
+
 
 //    @PostMapping("/comments/delete/{id}")
 //    public CommentsResponseDto deleteCommentLikes(@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl userDetails){
