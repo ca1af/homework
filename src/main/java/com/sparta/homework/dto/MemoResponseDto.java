@@ -2,6 +2,7 @@ package com.sparta.homework.dto;
 
 import com.sparta.homework.entity.Comments;
 import com.sparta.homework.entity.Memo;
+import com.sparta.homework.entity.User;
 import com.sparta.homework.entity.Timestamped;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,7 +16,7 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 public class MemoResponseDto extends Timestamped {
     private Long id;
-    private String userName;
+    private String username;
     private String title;
     private String contents;
     private int likes;
@@ -25,7 +26,7 @@ public class MemoResponseDto extends Timestamped {
 
     private MemoResponseDto(Memo memo) {
         this.id = memo.getId();
-        this.userName = memo.getUserName();
+        this.username = memo.getUser().getUsername();
         this.title = memo.getTitle();
         this.contents = memo.getContents();
         this.likes = memo.getLikes();
