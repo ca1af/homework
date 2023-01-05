@@ -12,15 +12,16 @@ public class LikesComment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @ManyToOne
-    @JoinColumn(name = "COMMENTS_ID", nullable = false)
-    private Comments comments;
+//    @ManyToOne
+//    @JoinColumn(name = "COMMENTS_ID", nullable = false)
+//    private Comments comments;
+    private Long commentsId;
     @ManyToOne
     @JoinColumn(name = "USER_ID", nullable = false)
     private User user;
 
     public LikesComment(Comments comments, User user) {
-        this.comments = comments;
+        this.commentsId = comments.getId();
         this.user = user;
     }
 }

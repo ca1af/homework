@@ -2,8 +2,11 @@ package com.sparta.homework.service;
 
 import com.sparta.homework.dto.MemoRequestDto;
 import com.sparta.homework.dto.MemoResponseDto;
+import com.sparta.homework.entity.Comments;
 import com.sparta.homework.entity.Memo;
 import com.sparta.homework.entity.User;
+import com.sparta.homework.repository.LikesCommentRepository;
+import com.sparta.homework.repository.LikesMemoRepository;
 import com.sparta.homework.repository.MemoRepository;
 import com.sparta.homework.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +24,8 @@ import java.util.stream.Collectors;
 public class MemoService {
     private final MemoRepository memoRepository;
     private final UserRepository userRepository;
+    private final LikesMemoRepository likesMemoRepository;
+    private final LikesCommentRepository likesCommentRepository;
 
     @Transactional
     public MemoResponseDto createMemo(MemoRequestDto requestDto) {
@@ -89,6 +94,12 @@ public class MemoService {
         );
 
         memoRepository.deleteMemoByUserIdAndId(memo.getId(), user.getId());
+        likesMemoRepository.deleteAllByMemoId(memo.getId());
+
+        List<Comments> commentsList = memo.getComments();
+        for (Comments comments : commentsList) {
+            likesCommentRepository.deleteAllByCommentsId(comments.getId());
+        } // for 문으로 모든 커맨츠 삭제하는 친구.
 
         return "삭제완료";
     }
@@ -100,6 +111,12 @@ public class MemoService {
                 () -> new IllegalArgumentException("ADMIN - 메모가 존재하지 않습니다.")
         );
         memoRepository.deleteMemoById(memo.getId());
+        likesMemoRepository.deleteAllByMemoId(memo.getId());
+
+        List<Comments> commentsList = memo.getComments();
+        for (Comments comments : commentsList) {
+            likesCommentRepository.deleteAllByCommentsId(comments.getId());
+        } // for 문으로 모든 커맨츠 삭제하는 친구.
         return "삭제완료";
     }
 }

@@ -12,15 +12,16 @@ public class LikesMemo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @ManyToOne
-    @JoinColumn(name = "MEMO_ID", nullable = false)
-    private Memo memo;
+//    @ManyToOne
+//    @JoinColumn(name = "MEMO_ID", nullable = false)
+//    private Memo memo;
+    private Long memoId;
     @ManyToOne
     @JoinColumn(name = "USER_ID", nullable = false)
     private User user;
 
     public LikesMemo(Memo memo, User user) {
-        this.memo = memo;
+        this.memoId = memo.getId();
         this.user = user;
     }
 

@@ -7,6 +7,7 @@ import com.sparta.homework.entity.Memo;
 import com.sparta.homework.entity.User;
 import com.sparta.homework.entity.UserRoleEnum;
 import com.sparta.homework.repository.CommentsRepository;
+import com.sparta.homework.repository.LikesCommentRepository;
 import com.sparta.homework.repository.MemoRepository;
 import com.sparta.homework.repository.UserRepository;
 import lombok.AllArgsConstructor;
@@ -24,6 +25,8 @@ public class CommentsService {
     private final CommentsRepository commentsRepository;
     private final MemoRepository memoRepository;
     private final UserRepository userRepository;
+
+    private final LikesCommentRepository likesCommentRepository;
 
     public CommentsResponseDto createComment(CommentsRequestDto requestDto, Long id, String userName) {
         Optional<User> user = userRepository.findByUsername(userName);
@@ -57,6 +60,7 @@ public class CommentsService {
                 () -> new IllegalArgumentException("작성자만 삭제할 수 있습니다."));
 
         commentsRepository.deleteCommentsByIdAndUserName(id, user.get().getUsername());
+        likesCommentRepository.deleteAllByCommentsId(id);
         return "삭제 완료";
     }
 
@@ -69,6 +73,8 @@ public class CommentsService {
                 () ->  new IllegalArgumentException("ADMIN - 댓글이 존재하지 않습니다."));
 
         commentsRepository.deleteCommentsById(id);
+
+        likesCommentRepository.deleteAllByCommentsId(id);
         return "삭제 완료";
     }
 }
