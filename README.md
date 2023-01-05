@@ -1,27 +1,46 @@
-# homework
+# Java Spring Web Server: Memo Application
+Java Spring framework를 이용하여 게시글 CRUD, 댓글 작성, 게시글과 댓글 좋아요 등의 기능을 가진 back-end Web Server를 구축하였습니다.
+
+## 개발기간
+2022/12/30 09:00 - 2023/1/6 12:00
+
+## 멤버 소개
+김미란 https://github.com/h7359841
+
+박경원 https://github.com/ruddnjs5816
+
+김동균 https://github.com/ca1af
+
+김주성 https://github.com/karlema
+
+곽두영 https://github.com/youngfromnowhere
+
+## Dependencies
+1. Spring Web
+2. Spring data JPA
+3. Thymeleaf
+4. Lombok
+5. H2 database
+
+## 주요기능
+#### REST API
+URL주소와 GET, POST, PUT, DELETE등의 메서드로 요청을 받아서, client에게 JSON형식의 데이터를 반환합니다.
+#### CRUD
+메모(게시글), 댓글 엔티티에 대해 게시, 조회, 수정, 삭제 기능을 구현하였습니다.
+#### 좋아요 기능
+게시글, 댓글에 대해 한 User당 하나의 좋아요를 표시할 수 있습니다.
+좋아요를 취소할 수 있습니다.
+#### Sign in / Log in
+JWT 방식으로 회원가입, 로그인 기능을 구현하였습니다.
+#### Member role
+일반 User와 Admin 계정을 구분하여 권한을 부여하였습니다.
 
 ## API 명세서
 
 POST맨을 이용했습니다. 아래 링크에서 확인 할 수 있습니다.
 
 https://documenter.getpostman.com/view/24788145/2s8YzXtedY#d106912e-1f82-49ba-aacf-9e8d8c86cea0
-
-1. JWT를 사용하여 인증/인가를 구현 했을 때의 장점은 무엇일까요?
-- secret key를 알지 못한다면 중요 데이터에 접근 불가능하며, 그 외 알아도 되는 데이터들은 간단한 디코드로 풀 수 있다.
-2. 반대로 JWT를 사용한 인증/인가의 한계점은 무엇일까요?
-- secret key가 유출되면 보안에 매우 취약하다. 더하여 인가를 위해서 새로운 키를 발행해야 한다.
-3. 만약 댓글 기능이 있는 블로그에서 댓글이 달려있는 게시글을 삭제하려고 한다면 무슨 문제가 발생할까요? Database 테이블 관점에서 해결방법이 무엇일까요?
-- JWT를 사용한다면 댓글의 삭제는 댓글의 Token을 가지고 있는 사람이 책임지지 않을까?...모르겠다. 게시글을 삭제하면 댓글이 다 날아간다? 혹은 댓글 삭제 권한에 막혀 실패한다?
-- 해결 방법은 인가의 범위를 통해 해결 할 수 있을 듯 하다. "게시글의 작성자" 와 "댓글의 작성자" 를 나누어 권한을 다르게 부여하는 것. 예를 들어 게시글의 작성자는 댓글의 삭제나 게시글의 삭제가 자유롭게 한다! 등
-4. IoC / DI 에 대해 간략하게 설명해 주세요!
-- IoC는 제어의 역전의 개념이며, 개발자가 컨테이너에 제어권을 넘겨서 객체의 생성부터 생명주기 관리까지 위임하는 것을 말한다.
-- DI등에 대한 자세한 설명 https://velog.io/@calaf/%EC%8A%A4%ED%94%84%EB%A7%81%EC%9D%98-%ED%8A%B9%EC%A7%95%EA%B3%BC-%EC%9D%98%EC%A1%B4%EC%84%B1-%EC%A3%BC%EC%9E%85DI
-
-다듬는 과정에서 느낀 점을 아래 블로그에 정리했습니다.
-
-1번
-https://velog.io/@calaf/JWT-%ED%86%A0%ED%81%B0-%EC%9D%B8%EC%A6%9D%EC%9D%84-%EB%A7%A4%EC%84%9C%EB%93%9C%EB%A1%9C-%EA%B0%84%EC%86%8C%ED%99%94-%ED%95%98%EA%B8%B0
+https://documenter.getpostman.com/view/24788145/2s8YzXtedY#3bcb9d75-daa2-423c-b39e-fa405ae2e041
 
 
-2번
-https://velog.io/@calaf/%EC%8A%A4%ED%94%84%EB%A7%81-%EC%9E%85%EB%AC%B8-PreAuthorize-%EC%A4%80%EB%B9%84
+
