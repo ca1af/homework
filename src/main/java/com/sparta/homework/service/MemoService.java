@@ -10,11 +10,8 @@ import com.sparta.homework.repository.LikesMemoRepository;
 import com.sparta.homework.repository.MemoRepository;
 import com.sparta.homework.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
-
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -43,14 +40,12 @@ public class MemoService {
         Optional<User> user = userRepository.findByUsername(userName);
         List<Memo> memos = memoRepository.findAllByUserIdOrderByCreatedAtDesc(user.get().getId());
         return memos.stream().map(MemoResponseDto::from).collect(Collectors.toList());
-//        return memos.stream().map(MemoResponseDto::new).collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
     public List<MemoResponseDto> getMemosAdmin() {
         List<Memo> memos = memoRepository.findAll();
         return memos.stream().map(MemoResponseDto::from).collect(Collectors.toList());
-//        return memos.stream().map(MemoResponseDto::new).collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)

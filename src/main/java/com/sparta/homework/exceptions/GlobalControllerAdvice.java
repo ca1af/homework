@@ -44,5 +44,4 @@ public class GlobalControllerAdvice {
         response.setContentType("application/json");
         return new ErrorResponseDto(e.getMessage(), response.getStatus());
     }
-
 }

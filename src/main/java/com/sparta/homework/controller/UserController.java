@@ -3,15 +3,12 @@ package com.sparta.homework.controller;
 import com.sparta.homework.dto.LoginRequestDto;
 import com.sparta.homework.dto.SignupRequestDto;
 import com.sparta.homework.jwt.JwtUtil;
-import com.sparta.homework.security.UserDetailsImpl;
 import com.sparta.homework.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 

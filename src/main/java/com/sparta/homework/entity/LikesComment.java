@@ -12,9 +12,6 @@ public class LikesComment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-//    @ManyToOne
-//    @JoinColumn(name = "COMMENTS_ID", nullable = false)
-//    private Comments comments;
     private Long commentsId;
     @ManyToOne
     @JoinColumn(name = "USER_ID", nullable = false)

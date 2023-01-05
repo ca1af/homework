@@ -1,11 +1,9 @@
 package com.sparta.homework.dto;
 
 import com.sparta.homework.entity.Comments;
-import com.sparta.homework.repository.LikesCommentRepository;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.validator.constraints.Length;
 
 import java.time.LocalDateTime;
 
@@ -13,6 +11,7 @@ import java.time.LocalDateTime;
 @Setter
 @NoArgsConstructor
 public class CommentsResponseDto {
+    Long id;
     String comment;
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
@@ -22,12 +21,8 @@ public class CommentsResponseDto {
         this.comment = comments.getComment();
         this.createdAt = comments.getCreatedAt();
         this.modifiedAt = comments.getModifiedAt();
-//        if (comments.getLikes().size() == 0){
-//            this.likes = 0;
-//        } else {
-//            this.likes = comments.getLikes().size() -1;
-//        }
         this.likes = comments.getLikes();
+        this.id = comments.getId();
     }
 
     public static CommentsResponseDto from(Comments comments) {

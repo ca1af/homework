@@ -28,9 +28,6 @@ public class User {
     @OneToMany
     List<Memo> memos = new ArrayList<>();
 
-//    @OneToMany
-//    List<LikesComment> likes = new ArrayList<>();
-
     public User(String username, String password, UserRoleEnum role) {
         this.username = username;
         this.password = password;

@@ -39,11 +39,9 @@ public class WebSecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception{
 
         httpSecurity.csrf().disable();
-        //이게 뭘까?
         // csrf/xss < 키워드로 검색해보기.
 
         httpSecurity.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-        //세션 무상태성 선언이 왜필요하지? JWT 쓰잖아... 그냥 디폴트로 해놓는건가?
         //세션 안쓰니까 STESELESS 쓴거임.
 
         httpSecurity.authorizeRequests().antMatchers("/api/user/**").permitAll()
@@ -53,14 +51,11 @@ public class WebSecurityConfig {
         // 그리고 이 모든 작업 전에 JwtAuthFilter , UsernamePasswordAuth~ 필터 거쳐야함.
 
 //        httpSecurity.formLogin().disable();
-//        httpSecurity.formLogin().init(httpSecurity);
         // formlogin 사용하지 않으므로 디스에이블
 
         httpSecurity
                 .formLogin()
                 .loginProcessingUrl("/api/user/login")
-//                .usernameParameter("username")
-//                .passwordParameter("password")
                 .successHandler(customAuthenticationSuccessHandler)
                 .failureHandler(customAuthenticationFailureHandler)
         ;

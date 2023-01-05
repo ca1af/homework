@@ -12,9 +12,6 @@ public class LikesMemo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-//    @ManyToOne
-//    @JoinColumn(name = "MEMO_ID", nullable = false)
-//    private Memo memo;
     private Long memoId;
     @ManyToOne
     @JoinColumn(name = "USER_ID", nullable = false)

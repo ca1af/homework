@@ -7,6 +7,6 @@ import java.util.Optional;
 
 public interface CommentsRepository extends JpaRepository<Comments, Long>{
     Optional<Comments> findByIdAndUserName(Long id, String userName);
-    Optional<Comments> deleteCommentsByIdAndUserName(Long id, String userName);
-    Optional<Comments> deleteCommentsById(Long id);
+    void deleteCommentsByIdAndUserName(Long id, String userName);
+    void deleteCommentsById(Long id);
 }

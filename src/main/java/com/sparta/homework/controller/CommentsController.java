@@ -24,7 +24,6 @@ public class CommentsController {
     public String updateComment(@PathVariable Long id, @RequestBody CommentsRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return commentsService.updateComment(requestDto, id, userDetails.getUsername());
     }
-    //User반환하지 말구 인증 reponse(검증통과된 유저네임이과 유저롤). <- return을 이것으로 해보자//
 
     @PutMapping("/admin/comments/{id}")
     @PreAuthorize("hasRole('ADMIN')")

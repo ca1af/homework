@@ -58,29 +58,4 @@ public class LikesService {
         }
         return CommentsResponseDto.from(comments);
     }
-
-//    @Transactional
-//    public CommentsResponseDto likeComment(Long id, User user) {
-//        Comments comments = commentsRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("해당 코멘트가 없습니다"));
-//        // likeRepository 에 이미 같은 사용자! 가 좋아요 한 것이 있다면 제거해야 해.
-//        if (likesCommentRepository.findByUserId(user.getId()).isEmpty()) {
-//            LikesComment likesComment = likesCommentRepository.saveAndFlush(new LikesComment(comments, user));
-//            comments.getLikes().add(likesComment);
-//        } else if (likesCommentRepository.findByUserId(user.getId()).isPresent()) {
-//            likesCommentRepository.deleteByUserId(user.getId());
-//        }
-//
-//        return CommentsResponseDto.from(comments);
-//    }
-//
-//
-//        @Transactional
-//    public CommentsResponseDto deleteLikeComment(Long id, User user) {
-//        Comments comments = commentsRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("해당 코멘트가 없습니다"));
-//        if (likesCommentRepository.findByUserId(user.getId()).isPresent()) {
-//            likesCommentRepository.deleteByUserId(user.getId());
-//        }
-//        return CommentsResponseDto.from(comments);
-//    }
-
 }
