@@ -54,7 +54,7 @@ public class LikesService {
         Comments comments = commentsRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("해당 코멘트가 없습니다"));
         if (likesCommentRepository.countLikesCommentByUserIdAndCommentsId(user.getId(), comments.getId()) != 0) {
             likesCommentRepository.deleteByUserIdAndCommentsId(user.getId(), comments.getId());
-            comments.setLikesCountComment(likesCommentRepository.countLikesCommentByCommentsId(user.getId()));
+            comments.setLikesCountComment(likesCommentRepository.countLikesCommentByCommentsId(comments.getId()));
         }
         return CommentsResponseDto.from(comments);
     }
