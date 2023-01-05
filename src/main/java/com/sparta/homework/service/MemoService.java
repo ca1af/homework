@@ -12,6 +12,7 @@ import com.sparta.homework.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -28,7 +29,7 @@ public class MemoService {
     public MemoResponseDto createMemo(MemoRequestDto requestDto) {
 
         User user = userRepository.findByUsername(requestDto.getUsername()).orElseThrow(
-                ()-> new IllegalArgumentException("유저이름이 일치하지 않습니다"));
+                () -> new IllegalArgumentException("유저이름이 일치하지 않습니다"));
 
         Memo memo = memoRepository.saveAndFlush(new Memo(requestDto, user));
 
@@ -66,42 +67,48 @@ public class MemoService {
     }
 
     @Transactional
-    public String update(Long id, MemoRequestDto requestDto, String userName) {
+    public MemoResponseDto update(Long id, MemoRequestDto requestDto, String userName) {
         User user = userRepository.findByUsername(userName).orElseThrow(() -> new IllegalArgumentException("유저 없음"));
         Memo memo = memoRepository.findByIdAndUserId(id, user.getId()).orElseThrow(() -> new IllegalArgumentException("작성자만 수정할 수 있습니다."));
         memo.update(requestDto);
-        return "수정 완료";
+        return MemoResponseDto.from(memo);
     }
 
     @Transactional
-    public String updateAdmin(Long id, MemoRequestDto requestDto) {
+    public MemoResponseDto updateAdmin(Long id, MemoRequestDto requestDto) {
         Memo memo = memoRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("ADMIN - 메모가 존재하지 않습니다."));
         memo.update(requestDto);
-        return "수정완료";
+        return MemoResponseDto.from(memo);
     }
 
     @Transactional
-    public String deleteMemo(Long id, String userName) {
+    public List<MemoResponseDto> deleteMemo(Long id, String userName) {
         User user = userRepository.findByUsername(userName).orElseThrow(() -> new IllegalArgumentException("메시지"));
 
-        Memo memo = memoRepository.findByIdAndUserId(id, user.getId()).orElseThrow(
-                () -> new IllegalArgumentException("작성자만 삭제할 수 있습니다.")
-        );
+        if (memoRepository.findById(id).isPresent()) {
+            Memo memo = memoRepository.findByIdAndUserId(id, user.getId()).orElseThrow(
+                    () -> new IllegalArgumentException("작성자만 삭제할 수 있습니다.")
+            );
 
-        memoRepository.deleteMemoByUserIdAndId(memo.getId(), user.getId());
-        likesMemoRepository.deleteAllByMemoId(memo.getId());
+            memoRepository.deleteMemoByIdAndUserId(memo.getId(), user.getId());
 
-        List<Comments> commentsList = memo.getComments();
-        for (Comments comments : commentsList) {
-            likesCommentRepository.deleteAllByCommentsId(comments.getId());
-        } // for 문으로 모든 커맨츠 삭제하는 친구.
+            likesMemoRepository.deleteAllByMemoId(memo.getId());
+            List<Comments> commentsList = memo.getComments();
+            for (Comments comments : commentsList) {
+                likesCommentRepository.deleteAllByCommentsId(comments.getId());
+            } // for 문으로 모든 커맨츠 삭제하는 친구.
+        } else {
+            memoRepository.findByIdAndUserId(id, user.getId()).orElseThrow(
+                    () -> new IllegalArgumentException("선택한 메모는 존재하지 않습니다.")
+            );
+        }
 
-        return "삭제완료";
+        return getMemos(user.getUsername());
     }
 
 
     @Transactional
-    public String deleteMemoAdmin(Long id) {
+    public List<MemoResponseDto> deleteMemoAdmin(Long id) {
         Memo memo = memoRepository.findById(id).orElseThrow(
                 () -> new IllegalArgumentException("ADMIN - 메모가 존재하지 않습니다.")
         );
@@ -112,7 +119,7 @@ public class MemoService {
         for (Comments comments : commentsList) {
             likesCommentRepository.deleteAllByCommentsId(comments.getId());
         } // for 문으로 모든 커맨츠 삭제하는 친구.
-        return "삭제완료";
+        return getMemosAdmin();
     }
 }
 

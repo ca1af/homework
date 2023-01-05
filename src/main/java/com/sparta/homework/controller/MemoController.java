@@ -44,24 +44,24 @@ public class MemoController {
     }
 
     @PutMapping("/api/memos/{id}")
-    public String updateMemo(@PathVariable Long id, @RequestBody MemoRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public MemoResponseDto updateMemo(@PathVariable Long id, @RequestBody MemoRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return memoService.update(id, requestDto, userDetails.getUsername());
     }
 
     @PutMapping("/api/admin/memos/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public String updateMemoAdmin(@PathVariable Long id, @RequestBody MemoRequestDto requestDto) {
+    public MemoResponseDto updateMemoAdmin(@PathVariable Long id, @RequestBody MemoRequestDto requestDto) {
         return memoService.updateAdmin(id, requestDto);
     }
 
     @DeleteMapping("/api/memos/{id}")
-    public String deleteMemo(@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public List<MemoResponseDto> deleteMemo(@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return memoService.deleteMemo(id, userDetails.getUsername());
     }
 
     @DeleteMapping("/api/admin/memos/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public String deleteMemoAdmin(@PathVariable Long id) {
+    public List<MemoResponseDto> deleteMemoAdmin(@PathVariable Long id) {
         return memoService.deleteMemoAdmin(id);
     }
 }

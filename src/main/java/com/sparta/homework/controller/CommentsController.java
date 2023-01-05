@@ -4,6 +4,7 @@ import com.sparta.homework.dto.CommentsRequestDto;
 import com.sparta.homework.dto.CommentsResponseDto;
 import com.sparta.homework.security.UserDetailsImpl;
 import com.sparta.homework.service.CommentsService;
+import com.sparta.homework.service.MemoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -21,13 +22,13 @@ public class CommentsController {
     }
 
     @PutMapping("/comments/{id}")
-    public String updateComment(@PathVariable Long id, @RequestBody CommentsRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public CommentsResponseDto updateComment(@PathVariable Long id, @RequestBody CommentsRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return commentsService.updateComment(requestDto, id, userDetails.getUsername());
     }
 
     @PutMapping("/admin/comments/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public String updateCommentAdmin(@PathVariable Long id, @RequestBody CommentsRequestDto requestDto) {
+    public CommentsResponseDto updateCommentAdmin(@PathVariable Long id, @RequestBody CommentsRequestDto requestDto) {
             return commentsService.updateCommentAdmin(requestDto, id);
     }
 
@@ -38,7 +39,7 @@ public class CommentsController {
 
     @DeleteMapping("/admin/comments/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public String deleteCommentAdmin(@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-            return commentsService.deleteCommentAdmin(id, userDetails.getUsername());
+    public String deleteCommentAdmin(@PathVariable Long id) {
+            return commentsService.deleteCommentAdmin(id);
     }
 }
