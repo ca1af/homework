@@ -9,6 +9,7 @@ import java.util.Optional;
 public interface MemoRepository extends JpaRepository<Memo, Long> {
 
     void deleteMemoByUserIdAndId(Long id, Long userId);
+    void deleteMemoByIdAndUserId(Long id, Long userId);
     List<Memo> findAllByUserIdOrderByCreatedAtDesc(Long userId);
     Optional<Memo> findByIdAndUserId(Long id, Long userId);
     void deleteMemoById(Long id);

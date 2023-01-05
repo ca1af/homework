@@ -22,8 +22,6 @@ public class Memo extends Timestamped {
     @ManyToOne
     @JoinColumn(name = "USER_ID", nullable = false)
     private User user;
-    @Column
-    private String userName;
     @OrderBy(value = "createdAt DESC")
     @OneToMany(mappedBy = "memo", cascade = CascadeType.REMOVE, orphanRemoval = true)
     List<Comments> comments = new ArrayList<>();
@@ -34,17 +32,15 @@ public class Memo extends Timestamped {
         this.likes = likes;
     }
 
-    public Memo(String title, String contents, User user, String userName) {
+    public Memo(String title, String contents, User user) {
         this.contents = contents;
         this.title = title;
         this.user = user;
-        this.userName = userName;
     }
 
     public Memo(MemoRequestDto requestDto, User user) {
         this.contents = requestDto.getContents();
         this.title = requestDto.getTitle();
-        this.userName = user.getUsername();
         this.user = user;
     }
 

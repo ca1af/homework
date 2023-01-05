@@ -25,49 +25,52 @@ public class CommentsService {
     private final CommentsRepository commentsRepository;
     private final MemoRepository memoRepository;
     private final UserRepository userRepository;
-
     private final LikesCommentRepository likesCommentRepository;
 
     public CommentsResponseDto createComment(CommentsRequestDto requestDto, Long id, String userName) {
-        Optional<User> user = userRepository.findByUsername(userName);
+        User user = userRepository.findByUsername(userName).orElseThrow(IllegalArgumentException::new);
         Memo memo = memoRepository.findById(id).orElseThrow(() ->  new IllegalArgumentException("해당하는 메모id가 없다."));
-        Comments comment = commentsRepository.saveAndFlush(new Comments(requestDto, memo, user.get().getUsername()));
+        Comments comment = commentsRepository.saveAndFlush(new Comments(requestDto, memo, user.getUsername()));
         return CommentsResponseDto.from(comment);
     }
 
     @Transactional
-    public String updateComment(CommentsRequestDto requestDto, Long id, String userName) {
-        Optional<User> user = userRepository.findByUsername(userName);
-        Comments comment = commentsRepository.findByIdAndUserName(id, user.get().getUsername()).orElseThrow(
+    public CommentsResponseDto updateComment(CommentsRequestDto requestDto, Long id, String userName) {
+        User user = userRepository.findByUsername(userName).orElseThrow(IllegalArgumentException::new);
+        Comments comment = commentsRepository.findByIdAndUserName(id, user.getUsername()).orElseThrow(
                 () -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "작성자만 수정할 수 있습니다."));
         comment.update(requestDto);
-        return "수정 완료";
+        return CommentsResponseDto.from(comment);
     }
 
     @Transactional
-    public String updateCommentAdmin(CommentsRequestDto requestDto, Long id) {
+    public CommentsResponseDto updateCommentAdmin(CommentsRequestDto requestDto, Long id) {
         Comments comment = commentsRepository.findById(id).orElseThrow(
                 () -> new IllegalArgumentException("ADMIN - 댓글이 존재하지 않습니다."));
         comment.update(requestDto);
-        return "ADMIN-수정완료";
+        return CommentsResponseDto.from(comment);
     }
 
     @Transactional
     public String deleteComment(Long id, String userName) {
-        Optional<User> user = userRepository.findByUsername(userName);
+        User user = userRepository.findByUsername(userName).orElseThrow(IllegalArgumentException::new);
+        if (commentsRepository.findById(id).isPresent()){
+            commentsRepository.findByIdAndUserName(id, user.getUsername()).orElseThrow(
+                    () -> new IllegalArgumentException("작성자만 삭제할 수 있습니다."));
 
-        commentsRepository.findByIdAndUserName(id, user.get().getUsername()).orElseThrow(
-                () -> new IllegalArgumentException("작성자만 삭제할 수 있습니다."));
+            commentsRepository.deleteCommentsByIdAndUserName(id, user.getUsername());
+            likesCommentRepository.deleteAllByCommentsId(id);
+        } else {
+            throw new IllegalArgumentException("해당 코멘트가 없습니다");
+        }
 
-        commentsRepository.deleteCommentsByIdAndUserName(id, user.get().getUsername());
-        likesCommentRepository.deleteAllByCommentsId(id);
         return "삭제 완료";
     }
 
 
     @Transactional
-    public String deleteCommentAdmin(Long id, String userName){
-        Optional<User> user = userRepository.findByUsername(userName);
+    public String deleteCommentAdmin(Long id){
+
 
         commentsRepository.findById(id).orElseThrow(
                 () ->  new IllegalArgumentException("ADMIN - 댓글이 존재하지 않습니다."));
