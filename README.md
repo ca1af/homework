@@ -42,5 +42,7 @@ POST맨을 이용했습니다. 아래 링크에서 확인 할 수 있습니다.
 https://documenter.getpostman.com/view/24788145/2s8YzXtedY#d106912e-1f82-49ba-aacf-9e8d8c86cea0
 https://documenter.getpostman.com/view/24788145/2s8YzXtedY#3bcb9d75-daa2-423c-b39e-fa405ae2e041
 
+## 팀 노션 페이지
 
+https://www.notion.so/221230-230106-Spring-b0b44c834a674ec08024e45f5394748b
 
