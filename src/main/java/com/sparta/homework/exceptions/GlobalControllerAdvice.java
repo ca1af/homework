@@ -31,9 +31,12 @@ public class GlobalControllerAdvice {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponseDto validationException(MethodArgumentNotValidException e, HttpServletResponse response) {
         // 이부분은 @Valid 에서 실패시 수행된다.
+
+        String message = e.getBindingResult().getAllErrors().get(0).getDefaultMessage();
+
         response.setStatus(HttpStatus.BAD_REQUEST.value());
         response.setContentType("application/json");
-        return new ErrorResponseDto(e.getMessage(), response.getStatus());
+        return new ErrorResponseDto(message, response.getStatus());
     }
 
     @ExceptionHandler(UsernameNotFoundException.class)
